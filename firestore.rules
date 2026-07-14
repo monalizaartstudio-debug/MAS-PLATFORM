@@ -1,0 +1,90 @@
+﻿rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // دالة مساعدة للتحقق من هوية الأدمن الموثق عبر Firebase Auth
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'admin@monaliza.com';
+    }
+
+    // 1. مستند إعدادات الأدمن والحماية (قراءة وكتابة للأدمن فقط)
+    match /admin_settings/auth {
+      allow read, write: if isAdmin();
+    }
+
+    // 2. المستند العام للصيانة والتسجيل (قراءة للجميع، وكتابة للأدمن فقط)
+    match /admin_settings/public {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 3. قاعدة بيانات الطلاب (users)
+    match /users/{userId} {
+      function isSelf() {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      allow get: if isAdmin() || isSelf();
+      allow list: if isAdmin();
+
+      // الطالب ينشئ وثيقته بعد إنشاء حساب Firebase Auth الحقيقي.
+      allow create: if isSelf()
+                    && request.resource.data.role == 'student'
+                    && request.resource.data.courses.size() == 0
+                    && request.resource.data.phone is string
+                    && request.resource.data.keys().hasOnly([
+                      'name',
+                      'phone',
+                      'role',
+                      'courses',
+                      'avatarUrl',
+                      'currentSessionId',
+                      'authProvider',
+                      'createdAt'
+                    ]);
+
+      // الطالب يعدل بياناته الشخصية والجلسة فقط، والأدمن يدير الصلاحيات والكورسات.
+      allow update: if isAdmin() || (
+        isSelf()
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly(['name', 'avatarUrl', 'currentSessionId'])
+        && request.resource.data.diff(resource.data).addedKeys().hasOnly([])
+        && request.resource.data.diff(resource.data).removedKeys().hasOnly([])
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.phone == resource.data.phone
+        && request.resource.data.courses == resource.data.courses
+        && (!resource.data.keys().hasAny(['banned']) || request.resource.data.banned == resource.data.banned)
+        && (!resource.data.keys().hasAny(['banUntil']) || request.resource.data.banUntil == resource.data.banUntil)
+      );
+
+      allow delete: if false;
+    }
+
+    // 4. محتويات الكورسات: قراءة للادمن أو لطالب موثق ومشترك فعلاً في الكورس فقط
+    function isSubscribedStudentForCourse(courseId) {
+      return request.auth != null
+             && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student'
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.courses.hasAny([courseId]);
+    }
+
+    match /course_contents/{contentId} {
+      allow read: if isAdmin() || isSubscribedStudentForCourse(resource.data.courseId);
+      allow write: if isAdmin();
+    }
+    match /broadcasts/{broadcastId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 5. الطلبات القديمة (قراءة وكتابة للأدمن فقط لمعالجة الترحيل ومراجعة الأرشيف)
+    match /orders/{orderId} {
+      allow read, write: if isAdmin();
+    }
+
+    // أي collection تانية غير مذكورة هنا: ممنوعة تماماً افتراضياً.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

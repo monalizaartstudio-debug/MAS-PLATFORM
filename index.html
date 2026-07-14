@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAS - استوديو موناليزا للفنون</title>
+    <!-- Browser Favicon mapping -->
+    <link rel="icon" type="image/png" href="assets/logo_long_black.png">
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="light-theme">
+    <!-- Full-Screen Premium Loading Overlay -->
+    <div id="loading-screen" class="loading-screen active">
+        <div class="loading-screen-content">
+            <div class="loading-logo-wrapper">
+                <img src="assets/logo_long_black.png" alt="MAS" class="loading-logo-img">
+            </div>
+            <div class="loading-spinner-ring">
+                <div class="spinner-arc"></div>
+            </div>
+            <p class="loading-text">جاري التحميل<span class="loading-dots"></span></p>
+        </div>
+    </div>
+
+    <!-- Global Slim Progress Loading Bar -->
+    <div id="global-loader" class="global-loader"></div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-container">
+
+        <!-- ========================================== -->
+        <!-- VIEW: STUDENT AUTHENTICATION               -->
+        <!-- ========================================== -->
+        <section id="view-student-auth" class="view">
+            <div class="auth-wrapper">
+                <div class="auth-card">
+                    <div class="auth-logo-container">
+                        <img src="assets/logo_wide_black.png" 
+                             data-src-light="assets/logo_wide_black.png" 
+                             data-src-dark="assets/logo_wide_black.png" 
+                             alt="Monaliza Logo" class="auth-logo theme-logo">
+                    </div>
+                    
+                    <div class="auth-toggle-container">
+                        <div class="auth-toggle-slider"></div>
+                        <button id="btn-show-login" class="auth-toggle-btn active">تسجيل الدخول</button>
+                        <button id="btn-show-register" class="auth-toggle-btn">إنشاء حساب</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="form-login" class="auth-form" novalidate>
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                            <input type="text" id="login-phone" placeholder="رقم الهاتف" autocomplete="tel" inputmode="numeric" pattern="\d*" maxlength="11">
+                        </div>
+                        <span class="error-feedback" id="err-login-phone"></span>
+
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" id="login-password" placeholder="كلمة المرور" autocomplete="current-password">
+                            <button type="button" class="password-toggle-btn" data-target="login-password" aria-label="إظهار كلمة المرور">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-feedback" id="err-login-password"></span>
+
+                        <button type="submit" class="btn-primary btn-glow">
+                            <span>دخول المنصة</span>
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <p class="auth-terms-note">باستخدامك للمنصة فأنت توافق على <a href="#/terms" class="auth-terms-link">شروط الاستخدام</a></p>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="form-register" class="auth-form hidden" novalidate>
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" id="reg-name" placeholder="الاسم بالكامل">
+                        </div>
+                        <span class="error-feedback" id="err-reg-name"></span>
+
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                            <input type="text" id="reg-phone" placeholder="رقم الهاتف" autocomplete="tel" inputmode="numeric" pattern="\d*" maxlength="11">
+                        </div>
+                        <span class="error-feedback" id="err-reg-phone"></span>
+
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" id="reg-password" placeholder="كلمة المرور" autocomplete="new-password">
+                            <button type="button" class="password-toggle-btn" data-target="reg-password" aria-label="إظهار كلمة المرور">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-feedback" id="err-reg-password"></span>
+
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                            <input type="password" id="reg-confirm-password" placeholder="تأكيد كلمة المرور" autocomplete="new-password">
+                            <button type="button" class="password-toggle-btn" data-target="reg-confirm-password" aria-label="إظهار كلمة المرور">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-feedback" id="err-reg-confirm-password"></span>
+
+                        <button type="submit" class="btn-primary btn-glow">
+                            <span>إنشاء الحساب</span>
+                            <i class="fa-solid fa-user-plus"></i>
+                        </button>
+                        <p class="auth-terms-note">باستخدامك للمنصة فأنت توافق على <a href="#/terms" class="auth-terms-link">شروط الاستخدام</a></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: ADMIN AUTHENTICATION                 -->
+        <!-- ========================================== -->
+        <section id="view-admin-auth" class="view hidden">
+            <div class="auth-wrapper">
+                <div class="auth-card admin-auth-card" style="position: relative;">
+                    <div class="auth-logo-container" style="background: transparent; box-shadow: none;">
+                        <img src="assets/logo_wide_black.png" 
+                             alt="Monaliza Admin Logo" class="auth-logo" style="max-height: 90px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                    </div>
+                    <div class="admin-badge-container" style="margin: 10px 0 20px 0;">
+                        <span class="badge-premium" style="font-size: 1.1rem; font-weight: 900; letter-spacing: 1px;">تسجيل دخول الأدمن</span>
+                    </div>
+                    <form id="form-admin-login" class="auth-form" novalidate style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                            <input type="text" id="admin-login-phone" placeholder="رقم هاتف لوحة الادمن" inputmode="numeric" maxlength="11" required>
+                        </div>
+                        <span class="error-feedback" id="err-admin-phone"></span>
+
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fa-solid fa-key"></i></span>
+                            <input type="password" id="admin-login-password" placeholder="كلمة المرور السرية" required>
+                            <button type="button" class="password-toggle-btn" data-target="admin-login-password" aria-label="إظهار كلمة المرور">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-feedback" id="err-admin-password"></span>
+
+                        <button type="submit" id="btn-admin-submit-login" class="btn-primary btn-glow" style="width: 100%; padding: 14px; font-weight: 700; font-size: 1rem; border-radius: 8px;">
+                            <span>تسجيل الدخول</span>
+                            <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px;"></i>
+                        </button>
+
+                        <button type="button" id="btn-admin-back-site" class="btn-secondary" style="width: 100%; padding: 12px; font-weight: 600; font-size: 0.95rem; border-radius: 8px; border: 1.5px solid var(--card-border); background: transparent; color: var(--text-main);">
+                            <span>العودة للمنصة</span>
+                            <i class="fa-solid fa-arrow-left-long" style="margin-right: 8px;"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW: CHROME 404 ERROR PAGE                -->
+        <!-- ========================================== -->
+        <section id="view-404" class="view hidden">
+            <div class="chrome-404-container">
+                <div class="chrome-404-content">
+                    <div class="dino-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <h1>عذرًا، لم يتم العثور على الصفحة.</h1>
+                    <p>يتعذر على Monaliza Art Studio العثور على الصفحة المطلوبة أو ربما تم تغيير مسار الدخول.</p>
+                    <p class="chrome-err-code">HTTP 404 - ERR_FILE_NOT_FOUND</p>
+                    <div class="chrome-actions">
+                        <button id="btn-404-back-site" class="btn-chrome">العودة للمنصة</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: STUDENT HUB                          -->
+        <!-- ========================================== -->
+        <section id="view-hub" class="view hidden">
+            <!-- Sticky Header -->
+            <header class="hub-header sticky">
+                <div class="header-left" style="display: flex; align-items: center; gap: 16px;">
+                    <!-- Mobile Student Burger Toggle -->
+                    <button id="btn-student-burger-toggle" class="burger-menu-btn hidden-desktop" aria-label="فتح القائمة">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <img src="assets/logo_wide_black.png" 
+                         data-src-light="assets/logo_wide_black.png" 
+                         data-src-dark="assets/logo_wide_white.png" 
+                         alt="Monaliza Studio Logo" class="header-logo theme-logo">
+                </div>
+                <div class="header-right">
+                    <!-- Theme Switcher -->
+                    <button id="btn-theme-toggle" class="icon-btn ripple-btn" aria-label="تغيير المظهر">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    
+                    <!-- Notification Bell -->
+                    <div class="notification-wrapper">
+                        <button id="btn-notifications" class="icon-btn ripple-btn" aria-label="الإشعارات">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notification-badge" id="noti-badge">2</span>
+                        </button>
+                        <!-- Notifications Dropdown -->
+                        <div id="notifications-dropdown" class="dropdown-menu hidden">
+                            <div class="dropdown-header">الإشعارات الأخيرة</div>
+                            <div id="notifications-items-container">
+                                <!-- Injected dynamically via app.js -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Logout Button -->
+                    <button class="icon-btn logout-btn ripple-btn btn-logout-action" aria-label="تسجيل الخروج">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="hub-layout">
+                <!-- Mobile Sidebar Overlay -->
+                <div id="sidebar-overlay" class="sidebar-overlay"></div>
+                <!-- Collapsible Sidebar Menu for Student Hub (Desktop view) -->
+                <aside id="student-sidebar" class="student-sidebar">
+                    <div class="sidebar-user-profile">
+                        <div class="user-avatar-container">
+                            <div id="user-avatar-display" class="user-avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <h4 id="user-display-name">طالب موناليزا</h4>
+                            <span id="user-display-phone">01xxxxxxxxx</span>
+                        </div>
+                    </div>
+                    <nav class="sidebar-nav">
+                        <button class="sidebar-tab-btn active" data-tab="tab-home">
+                            <i class="fa-solid fa-house"></i> الرئيسية
+                        </button>
+                        <button class="sidebar-tab-btn" data-tab="tab-my-courses">
+                            <i class="fa-solid fa-graduation-cap"></i> دوراتي
+                        </button>
+                        <button class="sidebar-tab-btn" data-tab="tab-profile">
+                            <i class="fa-solid fa-user-gear"></i> الملف الشخصي
+                        </button>
+                        <button class="sidebar-tab-btn" data-tab="tab-doctor">
+                            <i class="fa-solid fa-chalkboard-user"></i> نبذة عن الدكتور
+                        </button>
+                        <button class="sidebar-tab-btn" data-tab="tab-about">
+                            <i class="fa-solid fa-circle-info"></i> عن المنصة
+                        </button>
+                    </nav>
+                    <div class="sidebar-footer">
+                        <button class="btn-logout-sidebar btn-logout-action">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>تسجيل الخروج</span>
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <main class="hub-main">
+
+                    <!-- INNER TAB 1: HOME & COURSES -->
+                    <div id="tab-home" class="student-tab-view">
+                        <div class="hero-welcome">
+                            <h1>مرحبا بك في موناليزا آرت ستوديو</h1>
+                            <p>ابدأ رحلتك الإبداعية اليوم وتعلم أساسيات الرسم والتظليل من المحترفين.</p>
+                        </div>
+
+                        <!-- Precepo Flow Navigation Grid -->
+                        <div class="nav-grid">
+                            <div class="nav-card" data-target-tab="tab-my-courses">
+                                <div class="nav-card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="nav-card-text">
+                                    <h3>دوراتي</h3>
+                                    <p>شاهد كورساتك النشطة</p>
+                                </div>
+                            </div>
+                            <div class="nav-card" data-target-tab="tab-about">
+                                <div class="nav-card-icon"><i class="fa-solid fa-circle-info"></i></div>
+                                <div class="nav-card-text">
+                                    <h3>عن المنصة</h3>
+                                    <p>تعرف على رؤية وأهداف المنصة</p>
+                                </div>
+                            </div>
+                            <div class="nav-card" data-target-tab="tab-profile">
+                                <div class="nav-card-icon"><i class="fa-solid fa-user-gear"></i></div>
+                                <div class="nav-card-text">
+                                    <h3>الملف الشخصي</h3>
+                                    <p>إعدادات حسابك الفني</p>
+                                </div>
+                            </div>
+                            <div class="nav-card" data-target-tab="tab-doctor">
+                                <div class="nav-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                <div class="nav-card-text">
+                                    <h3>نبذة عن الدكتور</h3>
+                                    <p>تعرف على الدكتور </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommended Course Section -->
+                        <section class="premium-course-section">
+                            <h2 class="section-title">
+                                <i class="fa-solid fa-star section-title-icon"></i>
+                                الدورات المتاحة حاليا 
+                            </h2>
+                            
+                            <div class="premium-course-card">
+                                <div class="course-thumbnail">
+                                    <img id="home-course-img" src="assets/course_logo.jpeg" alt="Course Logo" class="course-thumbnail-img">
+                                </div>
+                                <div class="course-content">
+                                    <span id="home-course-category" class="course-category"><i class="fa-solid fa-palette"></i> الفنون التشكيلية والمهندسين</span>
+                                    <h3 id="home-course-title" class="course-title">كورس قدرات الفنون</h3>
+                                    <p class="course-description">دورة تأهلك للنجاح في امتحان قدرات الفنون او قدرات العمارة بنوصلك للأحتراف في التظليل (الظل و النور) بالاشكال الهندسية و في العمارة بنرسخ عندك قواعد المنظور بجميع انواعه لتكون لائق بنسبة 100% لتخطي الامتحان.</p>
+                                    <div class="course-footer">
+                                        <div class="price-container">
+                                            <span class="price-val">500.00</span>
+                                            <span class="price-currency">جنيه مصري</span>
+                                        </div>
+                                        <button id="btn-subscribe" class="btn-primary btn-glow">
+                                            <i class="fa-solid fa-credit-card"></i>
+                                            <span>أنضم الآن</span>
+                                        </button>
+                                        <button id="btn-watch-course" class="btn-primary hidden btn-glow">
+                                            <i class="fa-solid fa-circle-play"></i>
+                                            <span>مشاهدة الكورس</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- INNER TAB 2: MY COURSES -->
+                    <div id="tab-my-courses" class="student-tab-view hidden">
+                        <div class="admin-page-title">
+                            <h2>دوراتي التعليمية</h2>
+                            <p>هنا تجد جميع الكورسات التي قمت بالاشتراك فيها والمفعلة لحسابك.</p>
+                        </div>
+                        <div id="my-courses-container" class="my-courses-grid">
+                            <p class="empty-state-text">ليس لديك أي كورسات نشطة حالياً. اشترك في الكورس المقترح لتفعيل حسابك.</p>
+                        </div>
+                    </div>
+
+                    <!-- INNER TAB 3: STUDENT PROFILE -->
+                    <div id="tab-profile" class="student-tab-view hidden">
+                        <div class="admin-page-title">
+                            <h2>الملف الشخصي</h2>
+                        </div>
+
+                        <div class="profile-settings-card">
+                            <div class="profile-avatar-upload-section">
+                                <div class="profile-avatar-wrapper">
+                                    <div id="profile-avatar-preview" class="profile-avatar-preview">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <label for="profile-avatar-file" class="avatar-edit-badge">
+                                        <i class="fa-solid fa-camera"></i>
+                                        <input type="file" id="profile-avatar-file" accept="image/*">
+                                    </label>
+                                </div>
+                                <div class="avatar-upload-info">
+                                    <h3>الصورة الشخصية</h3>
+                                    <p>اختر صورة واضحة لملفك الشخصي.</p>
+                                </div>
+                            </div>
+
+                            <form id="form-student-profile" class="profile-settings-form">
+                                <div class="input-group">
+                                    <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+                                    <input type="text" id="profile-name" placeholder="الاسم بالكامل" required>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="text" id="profile-phone" placeholder="رقم الهاتف" readonly>
+                                
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" id="profile-password" placeholder="كلمة المرور الجديدة">
+                                    <button type="button" class="password-toggle-btn" data-target="profile-password" aria-label="إظهار كلمة المرور">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="error-feedback" id="err-profile-password"></span>
+                                <button type="submit" class="btn-primary btn-glow">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span>حفظ التعديلات</span>
+                                </button>
+                            </form>
+
+                            <div class="profile-logout-section">
+                                <button class="btn-secondary btn-logout-action">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    <span>تسجيل الخروج من الحساب</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INNER TAB 4: ABOUT THE DOCTOR -->
+                    <div id="tab-doctor" class="student-tab-view hidden">
+                        <div class="admin-page-title">
+                            <h2>نبذة عن الدكتور</h2>
+                            <p>تعرف على المحاضر ومؤسس موناليزا آرت ستوديو.</p>
+                        </div>
+
+                        <div class="doctor-bio-card">
+                            <div class="doctor-header-info">
+                                <div class="doctor-avatar-mesh">
+                                    <img src="assets/doctor_photo.png" alt="Doctor Photo" class="doctor-avatar-img">
+                                </div>
+                                <div class="doctor-title-block">
+                                    <h2>د/ أحمد مصطفى أمين</h2>
+                                    <h3>فنان تشكيلي ومدرب فنون تشكيلية بخبرة لأكثر من 23 سنة</h3>
+                                </div>
+                            </div>
+
+                            <div class="doctor-bio-body">
+                                <h3>من هو د/ أحمد مصطفى أمين؟</h3>
+                                <p>هو فنان تشكيلي مصري وأكاديمي، كرس حياته المهنية لدراسة الفنون البصرية الكلاسيكية والحديثة وتدريسها.</p>
+                                
+                                <ul class="bio-list">
+                                    <li><i class="fa-solid fa-circle-check"></i> تخرج من كلية التربية الفنية بجامعة حلوان، وحاصل على درجة الماجستير في التربية الفنية.</li>
+
+                                    <li><i class="fa-solid fa-circle-check"></i> خبرة عملية وتدريبية تمتد لأكثر من 23 عاماً في تدريس الفنون وتأهيل الطلاب.</li>
+                                </ul>
+
+                                <h3>رؤيتنا في الكورسات:</h3>
+                                <p class="doctor-vision">"رسالة د/ أحمد في الحياة هي إيصال قيمة الفن لقلوب الناس وتبسيطه؛ لأن الفنون هي من تعطي للحياة ألواناً وتنهض بالمجتمع وذوقه."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INNER TAB 5: ABOUT THE PLATFORM -->
+                    <div id="tab-about" class="student-tab-view hidden">
+                        <div class="admin-page-title">
+                            <h2>عن المنصة</h2>
+                            <p>تعرف على رؤية وأهداف استوديو موناليزا للفنون.</p>
+                        </div>
+
+                        <div class="doctor-bio-card">
+                            <div class="doctor-header-info" style="justify-content: center; flex-direction: column; text-align: center; border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                                <div class="auth-logo-container" style="background-color: transparent; margin-bottom: 16px;">
+                                    <img src="assets/logo_wide_black.png" 
+                                         data-src-light="assets/logo_wide_black.png" 
+                                         data-src-dark="assets/logo_wide_black.png" 
+                                         alt="Monaliza Logo" class="auth-logo theme-logo" style="max-height: 80px;">
+                                </div>
+                            </div>
+
+                            <div class="doctor-bio-body" style="text-align: center;">
+                                <h3>طوّر موهبتك في الرسم وتعلّم أسس الفن باحتراف 🎨</h3>
+                                <p style="margin-top: 16px; font-size: 1.05rem; line-height: 1.8;">في موناليزا آرت ستوديو هدفنا تدريس الفنون وتطوير متدربينا حتى الاحتراف والإتقان. دوراتنا تقدم لك نافذة مطلة على عالم الإبداع الغني بالتفاصيل والجمال. نساعدك في تطوير مشاريعك وتأمين مستقبلك الفني سواء من خلال دورة قدرات الفنون أو دورة قدرات العمارة أو دورات تصميم المنتجات اليدوية وحتى صناعة اللوحات الفنية.</p>
+                            </div>
+                        </div>
+
+                        <div class="developer-highlight-card">
+                            <div class="developer-highlight-content">
+                                <h3>تم تطويره بواسطة @Dev-_Yassin</h3>
+                                <a href="https://wa.me/201122645603" target="_blank" rel="noopener noreferrer" class="btn-developer-contact">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                    تواصل مع المطور
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+
+            <!-- ===== PREMIUM GLOBAL FOOTER ===== -->
+            <footer id="global-footer" class="site-footer">
+                <div class="footer-inner">
+                    <div class="footer-grid">
+                        <!-- RIGHT: Branding -->
+                        <div class="footer-col footer-brand">
+                            <img src="assets/logo_long_white.png" alt="Monaliza Art Studio Logo" class="footer-logo">
+                            <p class="footer-about">في موناليزا آرت ستوديو هدفنا تدريس الفنون وتطوير متدربينا حتى الاحتراف والإتقان. دوراتنا تقدم لك نافذة مطلة على عالم الإبداع الغني بالتفاصيل والجمال. نساعدك في تطوير مشاريعك وتأمين مستقبلك الفني سواء من خلال دورة قدرات الفنون أو دورة قدرات العمارة أو دورات تصميم المنتجات اليدوية وحتى صناعة اللوحات الفنية.</p>
+                        </div>
+                        <!-- MIDDLE: Links -->
+                        <div class="footer-col footer-links-col">
+                            <h4 class="footer-col-title">الروابط</h4>
+                            <ul class="footer-links">
+                                <li><a href="#/dashboard" class="footer-link"><i class="fa-solid fa-house"></i> الصفحة الرئيسية</a></li>
+                                <li><a href="#/watch-course" class="footer-link"><i class="fa-solid fa-play-circle"></i> دوراتنا</a></li>
+                                <li><a href="#/terms" class="footer-link"><i class="fa-solid fa-file-contract"></i> شروط الاستخدام</a></li>
+                            </ul>
+                        </div>
+                        <!-- LEFT: Social -->
+                        <div class="footer-col footer-social-col">
+                            <h4 class="footer-col-title">تواصل معنا</h4>
+                            <div class="footer-social-icons">
+                                <a href="https://www.facebook.com/share/18rmiWi5MB/" class="footer-social-btn facebook" aria-label="Facebook" target="_blank" rel="noopener">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                </a>
+                                <a href="https://wa.me/201098310340" class="footer-social-btn whatsapp" aria-label="WhatsApp" target="_blank" rel="noopener">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bottom Bar -->
+                    <div class="footer-bottom-bar">
+                        <p>جميع الحقوق محفوظة &copy; 2026 | <span dir="ltr" style="display:inline-block;">Powered By: <a href="https://wa.me/201122645603" target="_blank" rel="noopener noreferrer" class="footer-dev-link">Dev-_Yassin@</a></span></p>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Persistent Bottom Navigation Dock (Mobile View) -->
+            <nav class="bottom-nav">
+                <button class="bottom-nav-item active" data-tab="tab-home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>الرئيسية</span>
+                </button>
+                <button class="bottom-nav-item" data-tab="tab-my-courses">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>دوراتي</span>
+                </button>
+                <button class="bottom-nav-item" data-tab="tab-profile">
+                    <i class="fa-solid fa-user"></i>
+                    <span>حسابي</span>
+                </button>
+                <button class="bottom-nav-item" data-tab="tab-doctor">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>الدكتور</span>
+                </button>
+                <button class="bottom-nav-item" data-tab="tab-about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>المنصة</span>
+                </button>
+            </nav>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: SECURE VIDEO PLAYER                  -->
+        <!-- ========================================== -->
+        <section id="view-video" class="view hidden">
+            <!-- Dynamic Content Container for Course List / Lecture Player -->
+            <div id="video-dynamic-container" class="student-content-stage" style="padding: 20px; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box;"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW: SUBSCRIPTION INSTRUCTIONS            -->
+        <!-- ========================================== -->
+        <section id="view-instructions" class="view hidden">
+            <div class="subscription-instructions-shell">
+                <article class="subscription-instructions-card" aria-labelledby="subscription-instructions-title" style="position: relative;">
+                    <!-- Close button to go back to home/dashboard -->
+                    <button type="button" class="btn-close-modal" onclick="window.location.hash = ''" aria-label="إغلاق" style="position: absolute; top: 24px; left: 24px; background: transparent; border: none; color: rgba(255,255,255,0.6); font-size: 1.6rem; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#ff3860'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div class="subscription-instructions-header">
+
+                        <span class="subscription-instructions-kicker">
+                            <i class="fa-solid fa-circle-info"></i>
+                            خطوات الأشتراك في الكورس
+                        </span>
+                        <h1 id="subscription-instructions-title">تعليمات الاشتراك في كورس قدرات الفنون والعمارة يرجى اتباع الآتي:</h1>
+                    </div>
+
+                    <ol class="subscription-instructions-list">
+                        <li>مراسلة الدعم عبر رقم الواتساب أدناه.</li>
+                        <li>تحويل المبلغ المطلوب إلى رقم المحفظة المرسل من الدعم وتأكيد التحويل.</li>
+                        <li>إعطاء الدعم رقم الهاتف المسجل في المنصة.</li>
+                        <li>سيتم إتاحة لك الكورس في أقرب وقت.</li>
+                    </ol>
+
+                    <a
+                        class="subscription-whatsapp-button"
+                        href="https://wa.me/201098310340?text=%D9%85%D8%B1%D8%AD%D8%A8%D9%8B%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D9%83%D9%88%D8%B1%D8%B3%20%D9%85%D9%88%D9%86%D8%A7%D9%84%D9%8A%D8%B2%D8%A7."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span>التواصل مع الدعم عبر واتساب</span>
+                    </a>
+
+                    <div class="subscription-warning-frame" role="alert">
+                     في حال خالفت شروط المنصة أو سربت المحتوى يحق لنا أن نبند حسابك وجهازك للأبد وتعريضك للمسائلة القانونية فوراً.
+                    </div>
+
+                </article>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW: TERMS & CONDITIONS                   -->
+        <!-- ========================================== -->
+        <section id="view-terms" class="view hidden">
+            <div class="terms-shell">
+                <div class="terms-card">
+                    <div class="terms-header">
+                        <button class="terms-back-btn" onclick="history.back()" aria-label="رجوع">
+                            <i class="fa-solid fa-arrow-right"></i>
+                            <span>رجوع</span>
+                        </button>
+                        <span class="terms-badge"><i class="fa-solid fa-file-contract"></i> الشروط والأحكام</span>
+                    </div>
+
+                    <h1 class="terms-main-title">شروط الاستخدام — موناليزا آرت ستوديو</h1>
+                    <p class="terms-date">آخر تحديث: 5 يونيو 2026</p>
+
+                    <p class="terms-intro">مرحبًا بك في منصة <strong>موناليزا آرت ستوديو</strong>. باستخدامك لهذه المنصة، فإنك توافق على الالتزام الكامل بالشروط والأحكام الواردة أدناه. يُرجى قراءتها بعناية.</p>
+
+                    <h3 class="terms-section-title">١. قبول الشروط</h3>
+                    <p>باستخدامك للمنصة أو التسجيل فيها، فإنك تقرّ بأنك قرأت وفهمت ووافقت على جميع الشروط والأحكام المذكورة هنا. إذا كنت لا توافق على أي بند، يرجى عدم استخدام المنصة.</p>
+
+                    <h3 class="terms-section-title">٢. وصف الخدمة</h3>
+                    <p>تُقدّم موناليزا آرت ستوديو محتوى تعليميًا رقميًا في مجال الفنون والعمارة والتصميم عبر الإنترنت، يشمل المحاضرات المرئية والمواد المساعدة.</p>
+
+                    <h3 class="terms-section-title">٣. شروط إنشاء الحساب</h3>
+                    <ol class="terms-list">
+                        <li>تلتزم بتقديم معلومات صحيحة ودقيقة عند التسجيل.</li>
+                        <li>أنت مسؤول عن الحفاظ على سرية بيانات حسابك.</li>
+                        <li>يُحظر مشاركة بيانات تسجيل الدخول مع أي طرف آخر.</li>
+                    </ol>
+
+                    <h3 class="terms-section-title">٤. الاشتراك والدفع</h3>
+                    <ol class="terms-list">
+                        <li>تُفعَّل الكورسات يدويًا بعد التحقق من الدفع.</li>
+                        <li>المبالغ المدفوعة غير قابلة للاسترداد بعد تفعيل الاشتراك.</li>
+                        <li>يحق للمنصة تعديل الأسعار في أي وقت مع الإشعار المسبق.</li>
+                    </ol>
+
+                    <h3 class="terms-section-title">٥. حظر التسريب والنسخ</h3>
+                    <ol class="terms-list">
+                        <li>يُحظر تسجيل أو تنزيل أو مشاركة أي محتوى من المنصة.</li>
+                        <li>يُحظر نشر المحتوى على أي قناة أو منصة أخرى بأي شكل.</li>
+                        <li>المخالفة تعرّضك للمساءلة القانونية الفورية.</li>
+                    </ol>
+
+                    <h3 class="terms-section-title">٦. إيقاف الحساب وحظره</h3>
+                    <p>تحتفظ المنصة بحق إيقاف أو حذف أي حساب دون إشعار مسبق في حال مخالفة أي من هذه الشروط، مع حظر الجهاز المستخدم للأبد إذا اقتضت الضرورة.</p>
+
+                    <h3 class="terms-section-title">٧. محدودية المسؤولية</h3>
+                    <p>لا تتحمل المنصة المسؤولية عن أي خسائر مباشرة أو غير مباشرة تنتج عن استخدام أو عدم القدرة على استخدام الخدمة.</p>
+
+                    <h3 class="terms-section-title">٨. التعديلات على الشروط</h3>
+                    <p>تحتفظ موناليزا آرت ستوديو بحق تعديل هذه الشروط في أي وقت. يُعدّ استمرارك في استخدام المنصة بعد نشر التعديلات موافقةً ضمنية منك على الشروط الجديدة.</p>
+
+                    <h3 class="terms-section-title">٩. الاستخدام المقبول</h3>
+                    <ol class="terms-list">
+                        <li>يُحظر استخدام المنصة لأي أغراض غير مشروعة.</li>
+                        <li>يُحظر محاولة اختراق أو التلاعب في أنظمة المنصة.</li>
+                        <li>يُحظر إزعاج المستخدمين الآخرين أو انتهاك خصوصيتهم.</li>
+                    </ol>
+
+                    <h3 class="terms-section-title">١٠. التواصل مع الدعم</h3>
+                    <p>يتم التواصل مع فريق الدعم حصريًا عبر واتساب. لا تتحمل المنصة مسؤولية أي جهة أخرى تدّعي الانتساب إليها.</p>
+
+                    <h3 class="terms-section-title">١١. إخلاء المسؤولية عن الروابط الخارجية</h3>
+                    <p>قد تحتوي المنصة على روابط لمواقع خارجية. لا تتحمل المنصة أي مسؤولية عن محتوى أو ممارسات تلك المواقع.</p>
+
+                    <h3 class="terms-section-title">١٢. الخدمة كما هي</h3>
+                    <p>تُقدَّم الخدمة "كما هي" دون أي ضمانات صريحة أو ضمنية بشأن الدقة أو الاستمرارية أو الملاءمة لغرض معين.</p>
+
+                    <h3 class="terms-section-title">١٣. القانون المعمول به</h3>
+                    <p>تخضع هذه الشروط لقوانين جمهورية مصر العربية، وتختص محاكمها بالفصل في أي نزاع ينشأ عنها.</p>
+
+                    <h3 class="terms-section-title">١٤. الإشعارات</h3>
+                    <p>تُرسَل جميع الإشعارات الرسمية عبر واتساب أو عبر المنصة مباشرة.</p>
+
+                    <h3 class="terms-section-title">١٥. التواصل والاستفسارات</h3>
+                    <p>لأي استفسار بشأن هذه الشروط، تواصل معنا عبر واتساب: <a href="https://wa.me/201098310340" target="_blank" rel="noopener" class="terms-wa-link"><i class="fa-brands fa-whatsapp"></i> +20 10 98310340</a></p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: ADMIN DASHBOARD (PORTAL)            -->
+        <!-- ========================================== -->
+        <section id="view-admin-dashboard" class="view hidden">
+            <div class="admin-dashboard-container">
+                <!-- Admin Left Sidebar Navigation Menu -->
+                <aside class="admin-sidebar">
+                    <div class="admin-sidebar-header">
+                        <img src="assets/logo_long_black.png" 
+                             data-src-light="assets/logo_long_black.png" 
+                             data-src-dark="assets/logo_long_white.png" 
+                             alt="Monaliza Admin Logo" class="admin-sidebar-logo theme-logo">
+                        <span class="admin-badge">لوحة الادمن</span>
+                    </div>
+
+                    <nav class="admin-nav-menu">
+                        <button class="admin-nav-btn active" data-tab="tab-stats">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>غرفة القيادة</span>
+                        </button>
+                        <button class="admin-nav-btn" data-tab="tab-courses">
+                            <i class="fa-solid fa-video" style="transform: none;"></i>
+                            <span>إدارة الدورات والتحكم</span>
+                        </button>
+                        <button class="admin-nav-btn" data-tab="tab-settings">
+                            <i class="fa-solid fa-gears"></i>
+                            <span>إعدادات الأدمن</span>
+                        </button>
+                    </nav>
+
+                    <div class="admin-sidebar-footer">
+                        <button id="btn-admin-theme-toggle" class="btn-admin-theme icon-btn" aria-label="تبديل الوضع">
+                            <i class="fa-solid fa-moon"></i>
+                        </button>
+                        <button class="btn-admin-logout btn-logout-action">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>تسجيل الخروج</span>
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Admin Main Workspace -->
+                <main class="admin-content-area">
+                    <!-- Top Responsive Header Bar for Mobile Dashboard -->
+                    <div class="admin-mobile-header">
+                        <img src="assets/logo_wide_black.png" 
+                             data-src-light="assets/logo_wide_black.png" 
+                             data-src-dark="assets/logo_wide_white.png" 
+                             alt="Monaliza Logo" class="admin-mobile-logo theme-logo">
+                        <div class="admin-mobile-header-actions">
+                            <button id="btn-admin-theme-toggle-mobile" class="icon-btn" aria-label="تبديل الوضع">
+                                <i class="fa-solid fa-moon"></i>
+                            </button>
+                            <button id="btn-admin-menu-toggle" class="icon-btn" aria-label="فتح القائمة الإدارية">
+                                <i class="fa-solid fa-bars"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1: STATISTICS HUB -->
+                    <!-- TAB 1: STATISTICS HUB -->
+                    <div id="tab-stats" class="admin-tab-view">
+                        <div class="admin-page-title">
+                            <h2>غرفة القيادة والتحكم العام</h2>
+                            <p>مؤشرات الأداء اللحظية والتحكم في وضع الصيانة والتسجيل للمنصة.</p>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                                <div class="stat-info">
+                                    <h3>إجمالي الطلاب</h3>
+                                    <p id="stat-total-students">0 طالب</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fa-solid fa-video"></i></div>
+                                <div class="stat-info">
+                                    <h3>المحاضرات المرئية</h3>
+                                    <p id="stat-total-videos">0 فيديو</p>
+                                </div>
+                            </div>
+                            <div class="stat-card purple-theme">
+                                <div class="stat-icon purple-theme"><i class="fa-solid fa-chart-line"></i></div>
+                                <div class="stat-info">
+                                    <h3>إجمالي المشتركين بالدورات</h3>
+                                    <p id="stat-total-subscribers">0 مشترك</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Student Access Provisioning Section -->
+                        <div class="admin-page-title" style="margin-top: 40px; margin-bottom: 15px;">
+                            <h3 style="font-weight: 700; font-size: 1.3rem;"><i class="fa-solid fa-user-shield" style="margin-left: 8px; color: var(--accent-purple);"></i>إدارة صلاحيات الوصول للطلاب</h3>
+                            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">ابحث عن الطالب وقم بتعديل وتفعيل صلاحيات الكورسات له بشكل فوري.</p>
+                        </div>
+                        
+                        <div class="provisioning-search-wrapper" style="margin-bottom: 24px;">
+                            <div class="search-container" style="position: relative; width: 100%;">
+                                <i class="fa-solid fa-magnifying-glass search-icon" style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: var(--text-sub); pointer-events: none;"></i>
+                                <input type="text" id="admin-student-search-input" placeholder="ابحث عن طالب بالاسم أو رقم الهاتف..." class="search-input" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other" style="width: 100%; padding: 16px 50px 16px 20px; border-radius: 12px; background-color: var(--card-bg); border: 1.5px solid var(--card-border); color: var(--text-main); outline: none;">
+                            </div>
+                        </div>
+
+                        <div class="luxury-table-card">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>اسم الطالب</th>
+                                        <th>رقم الهاتف</th>
+                                        <th>صلاحيات الوصول (الكورس المفعّل)</th>
+                                        <th>إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="provisioning-users-list">
+                                    <!-- Injected dynamically via app.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: COURSES CONTROL -->
+                    <div id="tab-courses" class="admin-tab-view hidden">
+                        <div class="course-control-shell">
+                            <div class="course-control-hero">
+                                <div class="course-control-title">
+                                    <span class="course-control-kicker">لوحة إدارة الدورات</span>
+                                    <h2>إدارة الدورات والتحكم</h2>
+                                    <p>إضافة محاضرات أو ملفات، تعديل المحتوى المنشور، وحذف العناصر النهائية من مكان واحد واضح.</p>
+                                </div>
+                            </div>
+
+                            <div class="course-management-band course-picker-band">
+                                <div class="course-band-header">
+                                    <div>
+                                        <span class="section-chip">الكورس النشط</span>
+                                        <h3>اختر الكورس الذي تريد إدارة محتواه</h3>
+                                    </div>
+                                </div>
+                                <div class="course-selector-wrapper course-admin-selector">
+                                    <button type="button" class="course-choice active course-select-tab" data-course-id="course_01">
+                                        <i class="fa-solid fa-palette"></i>
+                                        <span>كورس قدرات الفنون</span>
+                                    </button>
+                                    <button type="button" class="course-choice course-select-tab" data-course-id="course_02">
+                                        <i class="fa-solid fa-compass-drafting"></i>
+                                        <span>كورس قدرات العمارة</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="lecture-flow-panel">
+                                <div class="course-band-header">
+                                    <div>
+                                        <span class="section-chip">محتوى جديد</span>
+                                        <h3>إضافة محاضرة أو ملف</h3>
+                                    </div>
+                                </div>
+
+                                <form id="form-upload-stepped-lecture" class="lecture-flow-form">
+                                    <input type="hidden" id="stepped-selected-course" value="course_01" required>
+
+                                    <div id="stepped-step-2" class="lecture-step lecture-reveal">
+                                        <div class="step-heading">
+                                            <span class="step-number"><i class="fa-solid fa-plus"></i></span>
+                                            <div>
+                                                <h4>بيانات المحتوى الجديد</h4>
+                                                <p>سيتم حفظ المحتوى داخل الكورس النشط المختار بالأعلى.</p>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="stepped-content-mode" value="video">
+                                        <div class="lecture-fields-grid">
+                                            <label class="control-field full">
+                                                <span id="stepped-title-label">عنوان المحاضرة</span>
+                                                <input type="text" id="stepped-lecture-title" placeholder="عنوان المحاضرة">
+                                            </label>
+                                            <label class="control-field full">
+                                                <span id="stepped-desc-label">وصف المحاضرة</span>
+                                                <textarea id="stepped-lecture-desc" placeholder="وصف المحاضرة..."></textarea>
+                                            </label>
+                                            <div class="control-field full">
+                                                <span id="stepped-thumb-label">صورة غلاف المحاضرة (اختياري)</span>
+                                                <label for="stepped-lecture-thumb-file" class="upload-dropzone compact" id="stepped-lecture-thumb-dropzone">
+                                                    <i class="fa-solid fa-image"></i>
+                                                    <span id="stepped-lecture-thumb-dropzone-title">ارفع صورة غلاف المحاضرة</span>
+                                                    <small id="stepped-lecture-thumb-dropzone-note">سيتم رفع الصورة تلقائياً إلى ImgBB، أو اتركها لاستخدام صورة الكورس الافتراضية.</small>
+                                                    <img id="stepped-lecture-thumb-preview" class="dropzone-preview-img hidden" alt="">
+                                                    <input type="file" id="stepped-lecture-thumb-file" accept="image/*">
+                                                </label>
+                                                <input type="hidden" id="stepped-lecture-thumb-url">
+                                            </div>
+                                            <div class="control-field full" style="display: flex; flex-direction: column; gap: 15px;">
+                                                <label class="control-field" style="width: 100%; margin: 0; display: block;">
+                                                    <span style="display: block; margin-bottom: 8px; font-weight: 600;">رابط فيديو المحاضرة (جوجل درايف)</span>
+                                                    <input type="url" id="admin-lecture-video" placeholder="أدخل رابط فيديو المحاضرة (جوجل درايف)..." required style="width: 100%; box-sizing: border-box;">
+                                                </label>
+                                                <label class="control-field" style="width: 100%; margin: 0; display: block;">
+                                                    <span style="display: block; margin-bottom: 8px; font-weight: 600;">رابط مجلد المرفقات والملفات</span>
+                                                    <input type="url" id="admin-lecture-folder" placeholder="أدخل رابط مجلد المرفقات والملفات..." required style="width: 100%; box-sizing: border-box;">
+                                                </label>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="upload-progress-wrapper hidden" id="stepped-progress-container">
+                                        <div class="progress-line">
+                                            <div class="progress-label">
+                                                <span id="stepped-thumb-status">رفع الصورة المصغرة</span>
+                                                <strong id="stepped-thumb-percent">0%</strong>
+                                            </div>
+                                            <div class="progress-track"><div id="stepped-thumb-bar" class="progress-fill"></div></div>
+                                        </div>
+
+                                    </div>
+
+                                    <button type="submit" id="btn-submit-stepped-lecture" class="btn-primary btn-glow publish-lecture-btn">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span id="btn-submit-stepped-label">حفظ المحاضرة</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="luxury-table-card course-content-table-card">
+                            <h3><i class="fa-solid fa-list-check"></i>قائمة المحتوى المنشور حالياً في الكورس المختار</h3>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>النوع</th>
+                                        <th>صورة الغلاف</th>
+                                        <th>عنوان الدرس / الملف</th>
+                                        <th>حالة التخزين</th>
+                                        <th>تاريخ الإضافة</th>
+                                        <th>إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="course-contents-list">
+                                    <!-- Injected dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- TAB 4: SECRET SETTINGS -->
+                    <div id="tab-settings" class="admin-tab-view hidden">
+                        <div class="admin-page-title">
+                            <h2>إعدادات حساب لوحة الأدمن</h2>
+                            <p>قم بتحديث هاتف وتفاصيل دخول لوحة الأدمن .</p>
+                        </div>
+                        
+                        <!-- Unified Settings Panel Layout -->
+                        <div class="admin-settings-unified-grid" style="display: grid; grid-template-columns: minmax(0, 760px); gap: 24px; margin-top: 20px;">
+                            <!-- Column 1: Main Settings Form -->
+                            <div class="admin-settings-main-form-panel" style="background: var(--card-bg); border: 1.5px solid var(--card-border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 20px;">
+                                <h3 style="font-weight: 700; color: var(--accent-purple); display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                                    <i class="fa-solid fa-user-gear"></i>بيانات الحساب الأساسية
+                                </h3>
+                                <form id="form-admin-settings" style="display: flex; flex-direction: column; gap: 16px;">
+                                    <div class="input-group">
+                                        <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                                        <input type="text" id="settings-admin-phone" placeholder="رقم هاتف لوحة الأدمن" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-icon" style="font-weight:800; font-size:1.1rem; color:var(--text-sub);">#</span>
+                                        <input type="text" id="settings-admin-hash" placeholder="رابط الهاش المخصص (مثال: admin)" required>
+                                    </div>
+                                    
+                                    <div style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: -10px; margin-top: 5px;">
+                                        <i class="fa-solid fa-circle-info" style="margin-left: 5px;"></i>
+                                        اترك حقل كلمة المرور فارغاً إذا كنت لا ترغب في تغييره.
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" id="settings-admin-password" placeholder="كلمة المرور الجديدة (اختياري)">
+                                    </div>
+                                    
+                                    <!-- Live Link Preview -->
+                                    <div id="settings-preview-link" style="padding: 12px 15px; border-radius: 10px; background: rgba(138, 43, 226, 0.04); border: 1px solid var(--card-border); font-size: 0.85rem; direction: ltr; text-align: left; word-break: break-all; color: var(--accent-purple); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-link" style="font-size: 0.95rem; color: var(--text-sub);"></i>
+                                        <span style="font-weight: 700;">سيظهر رابط الدخول الحالي بعد تحميل الإعدادات</span>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn-primary admin-btn btn-glow" style="padding: 14px; border-radius: 12px; font-weight: 700; transition: all 0.3s;" disabled>
+                                        <i class="fa-solid fa-floppy-disk" style="margin-left: 8px;"></i>حفظ البيانات الجديدة
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+    <!-- ========================================== -->
+    <!-- COURSE PROVISIONING SUB-MENU MODAL         -->
+    <!-- ========================================== -->
+    <div id="provisioning-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-effect" style="max-width: 500px; padding: 25px;">
+            <button class="btn-close-modal" id="btn-close-provisioning" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-header-container" style="text-align: center; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 20px;">
+                <div id="provisioning-student-avatar" style="width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 12px auto; background-size: cover; background-position: center; border: 2.5px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; background-color: var(--card-border);">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3 class="modal-title" id="provisioning-student-name" style="font-weight: 700; font-size: 1.25rem;">اسم الطالب</h3>
+                <p id="provisioning-student-phone" style="font-size: 0.85rem; color: var(--text-sub); margin-top: 4px;"></p>
+            </div>
+            
+            <div class="modal-body-container" style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Courses access checkboxes -->
+                <div>
+                    <h4 style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; color: var(--text-main);">تفعيل صلاحيات الكورسات</h4>
+                    <div class="provisioning-toggles" style="display: flex; flex-direction: column; gap: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; border: 1.5px solid var(--card-border);">
+                            <span style="font-weight: 600; font-size: 0.95rem;">كورس قدرات الفنون </span>
+                            <label class="switch-ios">
+                                <input type="checkbox" id="toggle-course-funoon">
+                                <span class="slider-ios"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 12px; border: 1.5px solid var(--card-border);">
+                            <span style="font-weight: 600; font-size: 0.95rem;">كورس قدرات العمارة</span>
+                            <label class="switch-ios">
+                                <input type="checkbox" id="toggle-course-omara">
+                                <span class="slider-ios"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-save-provisioning" class="btn-primary btn-glow" style="width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; transition: all 0.3s;" disabled>حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CONFIRM OLD PASSWORD MODAL                 -->
+    <!-- ========================================== -->
+    <div id="confirm-old-password-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-effect red-themed" style="max-width: 450px; border: 2px solid var(--danger);">
+            <div class="modal-header-container">
+                <div class="modal-icon-glow danger" style="background: rgba(220, 53, 69, 0.1); color: var(--danger);"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 class="modal-title" style="color: var(--danger);">تأكيد الهوية لحفظ التعديلات</h3>
+            </div>
+            <div class="modal-body-container">
+                <p class="modal-instructions" style="margin-bottom: 20px; font-weight: 600; text-align: center; color: var(--text-main);">
+                    يرجى إدخال كلمة المرور الحالية للأدمن لتأكيد وحفظ البيانات الجديدة.
+                </p>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="confirm-old-password-input" placeholder="كلمة المرور الحالية" required>
+                </div>
+                <div id="confirm-old-password-error" class="hidden" style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; font-weight: 700; text-align: center;">
+                    كلمة المرور الحالية غير صحيحة!
+                </div>
+                
+                <div class="modal-footer-buttons" style="display: flex; gap: 16px; justify-content: stretch; margin-top: 24px;">
+                    <button id="btn-cancel-confirm-old-password" class="btn-secondary" style="flex: 1;">إلغاء</button>
+                    <button id="btn-submit-confirm-old-password" class="btn-primary btn-glow btn-danger" style="flex: 1; background-color: var(--danger); border-color: var(--danger);">تأكيد وحفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- DELETE CONTENT CONFIRMATION MODAL          -->
+    <div id="delete-content-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-effect red-themed delete-confirm-card">
+            <div class="modal-header-container">
+                <div class="modal-icon-glow danger"><i class="fa-solid fa-trash-can"></i></div>
+                <h3 class="modal-title" style="color: var(--danger);">تأكيد حذف نهائي</h3>
+            </div>
+            <div class="modal-body-container">
+                <p id="delete-content-message" class="modal-instructions delete-confirm-message">
+                    سيتم حذف هذا المحتوى نهائياً من قاعدة البيانات وخوادم التخزين ولا يمكن التراجع عن العملية.
+                </p>
+                <div class="modal-footer-buttons delete-confirm-actions">
+                    <button type="button" id="btn-cancel-delete-content" class="btn-secondary">إلغاء</button>
+                    <button type="button" id="btn-confirm-delete-content" class="btn-primary btn-glow btn-danger">حذف نهائي</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- EDIT COURSE CONTENT MODAL                  -->
+    <!-- ========================================== -->
+    <div id="edit-content-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-effect edit-content-card">
+            <button type="button" class="btn-close-modal" id="btn-close-edit-content" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-header-container">
+                <div class="modal-icon-glow"><i class="fa-solid fa-pen-to-square"></i></div>
+                <h3 class="modal-title">تعديل المحتوى</h3>
+            </div>
+            <form id="form-edit-content" class="modal-body-container edit-content-form">
+                <input type="hidden" id="edit-content-id">
+                <input type="hidden" id="edit-content-type">
+                <label class="control-field">
+                    <span>الكورس</span>
+                    <select id="edit-content-course">
+                        <option value="course_01">كورس قدرات الفنون</option>
+                        <option value="course_02">كورس قدرات العمارة</option>
+                    </select>
+                </label>
+                <label class="control-field">
+                    <span>العنوان</span>
+                    <input type="text" id="edit-content-title" required>
+                </label>
+                <label class="control-field">
+                    <span>الوصف</span>
+                    <textarea id="edit-content-desc"></textarea>
+                </label>
+                <div class="control-field">
+                    <span>صورة الغلاف</span>
+                    <label for="edit-content-thumb-file" class="upload-dropzone compact" id="edit-content-thumb-dropzone">
+                        <i class="fa-solid fa-image"></i>
+                        <span id="edit-content-thumb-dropzone-title">ارفع صورة غلاف جديدة</span>
+                        <small id="edit-content-thumb-dropzone-note">اتركها كما هي إذا لم ترغب في تغيير الصورة الحالية.</small>
+                        <img id="edit-content-thumb-preview" class="dropzone-preview-img hidden" alt="">
+                        <input type="file" id="edit-content-thumb-file" accept="image/*">
+                    </label>
+                    <input type="hidden" id="edit-content-thumb-url">
+                </div>
+                <div class="control-field" style="display: flex; flex-direction: column; gap: 15px;">
+                    <label class="control-field" style="width: 100%; margin: 0; display: block;">
+                        <span style="display: block; margin-bottom: 8px; font-weight: 600;">رابط فيديو المحاضرة (جوجل درايف)</span>
+                        <input type="url" id="edit-lecture-video" placeholder="أدخل رابط فيديو المحاضرة (جوجل درايف)..." required style="width: 100%; box-sizing: border-box;">
+                    </label>
+                    <label class="control-field" style="width: 100%; margin: 0; display: block;">
+                        <span style="display: block; margin-bottom: 8px; font-weight: 600;">رابط مجلد المرفقات والملفات</span>
+                        <input type="url" id="edit-lecture-folder" placeholder="أدخل رابط مجلد المرفقات والملفات..." required style="width: 100%; box-sizing: border-box;">
+                    </label>
+                </div>
+                <div class="modal-footer-buttons edit-content-actions">
+                    <button type="button" id="btn-cancel-edit-content" class="btn-secondary">إلغاء</button>
+                    <button type="submit" class="btn-primary btn-glow">حفظ التعديل</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- LOGOUT OVERLAY MODAL                       -->
+    <!-- ========================================== -->
+    <div id="logout-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-effect">
+            <div class="modal-header-container">
+                <div class="modal-icon-glow danger"><i class="fa-solid fa-right-from-bracket"></i></div>
+                <h3 class="modal-title">تسجيل الخروج</h3>
+            </div>
+            <div class="modal-body-container">
+                <p class="modal-instructions" style="margin-bottom: 24px; font-weight: 500;">
+                    تسجيل الخروج - هل أنت متأكد من أنك تريد تسجيل الخروج؟
+                </p>
+                <div class="modal-footer-buttons" style="display: flex; gap: 16px; justify-content: stretch;">
+                    <button id="btn-cancel-logout" class="btn-secondary" style="flex: 1;">إلغاء</button>
+                    <button id="btn-confirm-logout" class="btn-primary btn-glow btn-danger" style="flex: 1; background-color: var(--danger);">تسجيل الخروج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Custom Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modular Script Imports -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

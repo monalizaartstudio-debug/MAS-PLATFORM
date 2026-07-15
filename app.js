@@ -2252,7 +2252,7 @@ function hasFirebaseStorageAsset(item, urlKey, pathKey) {
 }
 
 function getPrimaryContentUrl(item) {
-    return item.type === 'video' ? (item.driveFolderUrl || item.videoUrl) : item.fileUrl;
+    return item.type === 'video' ? (item.videoUrl || item.driveFolderUrl || item.folderUrl) : item.fileUrl;
 }
 
 const DEFAULT_COURSE_THUMBNAIL = 'assets/course_logo.jpeg';
@@ -2260,7 +2260,7 @@ const DEFAULT_COURSE_THUMBNAIL = 'assets/course_logo.jpeg';
 function getContentStorageStatus(item) {
     if (item.storageProvider === 'external_link') {
         return item.type === 'video'
-            ? { className: 'safe', icon: 'fa-folder-open', label: 'Google Drive' }
+            ? { className: 'safe', icon: 'fa-brands fa-youtube', label: 'YouTube' }
             : { className: 'safe', icon: 'fa-link', label: 'رابط خارجي' };
     }
     const primarySafe = item.type === 'video'
@@ -2532,10 +2532,10 @@ async function loadCourseManagement() {
                     </td>
                     <td>${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</td>
                     <td>
-                        <div class="content-actions">
-                            <a href="${escapeHtml(previewUrl)}" target="_blank" rel="noopener" class="btn-secondary">معاينة</a>
-                            <button type="button" class="btn-secondary edit-content-btn" data-id="${escapeHtml(item.id)}">تعديل</button>
-                            <button type="button" class="btn-primary delete-content-btn" data-id="${escapeHtml(item.id)}" style="background-color:var(--danger);">حذف</button>
+                        <div class="content-actions" style="display: flex; gap: 8px;">
+                            <a href="${escapeHtml(previewUrl)}" target="_blank" rel="noopener" class="btn-primary" style="background-color: #2563eb; font-size: 0.8rem; padding: 6px 12px; gap: 6px;"><i class="fa-solid fa-eye"></i> معاينة</a>
+                            <button type="button" class="btn-primary edit-content-btn" data-id="${escapeHtml(item.id)}" style="background-color: #7c3aed; font-size: 0.8rem; padding: 6px 12px; gap: 6px;"><i class="fa-solid fa-pen-to-square"></i> تعديل</button>
+                            <button type="button" class="btn-primary delete-content-btn" data-id="${escapeHtml(item.id)}" style="background-color: var(--danger); font-size: 0.8rem; padding: 6px 12px; gap: 6px;"><i class="fa-solid fa-trash"></i> حذف</button>
                         </div>
                     </td>
                 `;

@@ -1384,24 +1384,20 @@ body.dark-theme .btn-primary {
 }
 .watermark-overlay {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    color: #ffffff;
-    background-color: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-family: var(--font-outfit);
-    font-size: 0.85rem;
-    font-weight: 700;
+    z-index: 999;
     pointer-events: none;
     user-select: none;
-    z-index: 10;
+    opacity: 0.4;
+    font-size: 14px;
+    color: #fff;
+    background: rgba(0,0,0,0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: var(--font-outfit);
+    font-weight: 700;
     white-space: nowrap;
     display: inline-block;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    opacity: 0.75;
-    transition: top 3s cubic-bezier(0.4, 0, 0.2, 1), left 3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s ease;
 }
 .video-info-box {
     margin-top: 24px;
@@ -4539,17 +4535,18 @@ body.dark-theme .storage-status-badge.danger { color: #fb7185; }
 }
 
 /* Compact Embedded Player Wrapper (16:9 Widescreen) */
+/* Compact Embedded Player Wrapper (16:9 Widescreen) */
 .embedded-player-wrapper {
     position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto 20px auto;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    width: 95%;
+    max-width: 750px;
+    margin: 15px auto;
+    padding-bottom: 56.25%;
     height: 0;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    background-color: #000000;
+    background: #000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .embedded-player-wrapper iframe {
@@ -4561,16 +4558,30 @@ body.dark-theme .storage-status-badge.danger { color: #fb7185; }
     border: 0;
 }
 
-/* Native HTML5 Video Player */
-#lecture-native-player {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: #000;
-    border-radius: 12px;
+/* Player Actions Container */
+.player-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+    width: 95%;
+    max-width: 750px;
+    margin: 0 auto 20px auto;
+}
+
+.player-actions .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    color: white;
 }
 
 /* Fullscreen API Styles for the Wrapper */
@@ -4585,7 +4596,7 @@ body.dark-theme .storage-status-badge.danger { color: #fb7185; }
     background: #000;
     border-radius: 0;
 }
-.embedded-player-wrapper:fullscreen #lecture-native-player {
+.embedded-player-wrapper:fullscreen iframe {
     position: relative;
     width: 100%;
     height: 100%;
@@ -4661,6 +4672,14 @@ body.dark-theme .storage-status-badge.danger { color: #fb7185; }
         border-radius: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
+    }
+    .player-actions {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    .player-actions .btn-primary {
+        width: 100% !important;
+        height: 48px !important;
     }
     .watermark-overlay {
         font-size: 0.72rem !important;

@@ -949,38 +949,39 @@ async function renderLecturePlayer(courseId, lectureId) {
 
         const companionFiles = currentLecture.companionFiles || [];
 
-        let directStreamUrl = '';
-        const fileIdMatch = videoUrl.match(/[-\w]{25,}/);
-        if (fileIdMatch) {
-            const fileId = fileIdMatch[0];
-            directStreamUrl = `https://docs.google.com/uc?export=download&id=${fileId}`;
-        }
-
-        let playerHtml = '';
-        if (directStreamUrl) {
-            playerHtml = `
-                <video id="lecture-native-player" controls controlsList="nodownload" disablePictureInPicture playsinline src="${directStreamUrl}"></video>
-                <div id="video-watermark" class="watermark-overlay"></div>
-            `;
-        } else if (videoUrl) {
-            playerHtml = `
-                <video id="lecture-native-player" controls controlsList="nodownload" disablePictureInPicture playsinline src="${videoUrl}"></video>
-                <div id="video-watermark" class="watermark-overlay"></div>
-            `;
+        let frameHtml = '';
+        if (previewUrl) {
+            // sandbox: allow-scripts + allow-same-origin lets Drive player work
+            // Deliberately omitting 'allowfullscreen' to prevent native bypass
+            frameHtml = `<iframe
+                id="course-drive-iframe"
+                class="drive-folder-iframe"
+                src="${escapeHtml(previewUrl)}"
+                width="100%" height="100%"
+                allow="autoplay"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups-to-escape-sandbox"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>`;
         } else {
-            playerHtml = `<div style="color:var(--text-muted); text-align:center; padding: 40px;">رابط الفيديو غير متوفر</div>`;
+            frameHtml = `<div style="color:var(--text-muted); text-align:center; padding: 40px;">رابط الفيديو غير متوفر</div>`;
         }
 
-        let companionButtonHtml = '';
+        let actionsHtml = `<div class="player-actions">`;
+        
         if (companionFiles.length > 0) {
-            companionButtonHtml = `
-                <div style="text-align: center; margin: 15px auto 25px auto;">
-                    <a href="#companion-files?courseId=${courseId}&lectureIdx=${currentIndex}" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-file-pdf"></i> ملحقات المحاضرة
-                    </a>
-                </div>
+            actionsHtml += `
+                <a href="#companion-files?courseId=${courseId}&lectureIdx=${currentIndex}" class="btn-primary">
+                    <i class="fa-solid fa-file-pdf"></i> ملفات ومرفقات المحاضرة
+                </a>
             `;
         }
+        
+        actionsHtml += `
+            <button id="btn-secure-fullscreen" class="btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <i class="fa-solid fa-expand"></i> تكبير الشاشة بأمان
+            </button>
+        </div>`;
 
         container.innerHTML = `
             <header class="player-nav-header">
@@ -995,10 +996,11 @@ async function renderLecturePlayer(courseId, lectureId) {
                 <div class="video-layout">
                     <div class="video-main-panel">
                         <div id="drive-iframe-wrapper" class="embedded-player-wrapper">
-                            ${playerHtml}
+                            ${frameHtml}
+                            <div id="video-watermark" class="watermark-overlay"></div>
                         </div>
                         
-                        ${companionButtonHtml}
+                        ${actionsHtml}
                         
                         <div class="video-info-box">
                             <h2>${escapeHtml(currentLecture.title || '')}</h2>
@@ -1012,10 +1014,34 @@ async function renderLecturePlayer(courseId, lectureId) {
         
         startWatermark();
         
-        // Prevent right-click on the native video player to discourage downloading
-        const nativePlayer = document.getElementById('lecture-native-player');
-        if (nativePlayer) {
-            nativePlayer.addEventListener('contextmenu', e => e.preventDefault());
+        const btnSecureFullscreen = document.getElementById('btn-secure-fullscreen');
+        if (btnSecureFullscreen) {
+            btnSecureFullscreen.addEventListener('click', () => {
+                const wrapper = document.getElementById('drive-iframe-wrapper');
+                if (!wrapper) return;
+                
+                if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                    if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+                    else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+                    else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                    else if (document.msExitFullscreen) document.msExitFullscreen();
+                }
+            });
+            
+            const updateFullscreenUI = () => {
+                const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+                if (isFs) {
+                    btnSecureFullscreen.innerHTML = '<i class="fa-solid fa-compress"></i> تصغير الشاشة';
+                } else {
+                    btnSecureFullscreen.innerHTML = '<i class="fa-solid fa-expand"></i> تكبير الشاشة بأمان';
+                }
+            };
+            document.addEventListener('fullscreenchange', updateFullscreenUI);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+            document.addEventListener('msfullscreenchange', updateFullscreenUI);
         }
         
     } catch (e) {
@@ -1635,11 +1661,15 @@ function startWatermark() {
         const watermarkHeight = wmEl.clientHeight || 20;
 
         if (videoWidth > 0 && videoHeight > 0) {
-            const maxX = Math.max(10, videoWidth - watermarkWidth - 20);
-            const maxY = Math.max(10, videoHeight - watermarkHeight - 20);
+            // Constrain between 15% and 80% to avoid native controls (top right / bottom bar)
+            const minX = videoWidth * 0.15;
+            const minY = videoHeight * 0.15;
+            
+            const maxX = Math.max(minX, (videoWidth * 0.80) - watermarkWidth);
+            const maxY = Math.max(minY, (videoHeight * 0.80) - watermarkHeight);
 
-            const randomX = Math.max(10, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+            const randomX = Math.max(minX, Math.floor(Math.random() * (maxX - minX + 1)) + minX);
+            const randomY = Math.max(minY, Math.floor(Math.random() * (maxY - minY + 1)) + minY);
 
             wmEl.style.left = `${randomX}px`;
             wmEl.style.top = `${randomY}px`;

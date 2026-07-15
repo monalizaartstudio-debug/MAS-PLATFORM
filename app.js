@@ -944,37 +944,52 @@ async function renderLecturePlayer(courseId, lectureId) {
         const videoUrl = currentLecture.videoUrl || '';
         const folderUrl = currentLecture.folderUrl || currentLecture.driveFolderUrl || '';
 
-        // Build Drive preview URL from videoUrl via regex — zero API calls
-        const previewUrl = buildGoogleDriveFilePreviewUrl(videoUrl);
-
-        const companionFiles = currentLecture.companionFiles || [];
+        // Extract YouTube ID
+        let youtubeId = null;
+        if (videoUrl) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = videoUrl.match(regExp);
+            if (match && match[2].length === 11) {
+                youtubeId = match[2];
+            }
+        }
 
         let frameHtml = '';
-        if (previewUrl) {
-            // sandbox: allow-scripts + allow-same-origin lets Drive player work
-            // Deliberately omitting 'allowfullscreen' to prevent native bypass
+        if (youtubeId) {
+            const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0&modestbranding=1&showinfo=0`;
+            // Deliberately omitting 'allowfullscreen' so native YouTube fullscreen is disabled,
+            // forcing users to use our secure fullscreen button which keeps the watermark visible.
             frameHtml = `<iframe
-                id="course-drive-iframe"
-                class="drive-folder-iframe"
-                src="${escapeHtml(previewUrl)}"
+                id="course-youtube-iframe"
+                class="youtube-iframe"
+                src="${embedUrl}"
                 width="100%" height="100%"
-                allow="autoplay"
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups-to-escape-sandbox"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
                 loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
             ></iframe>`;
         } else {
-            frameHtml = `<div style="color:var(--text-muted); text-align:center; padding: 40px;">رابط الفيديو غير متوفر</div>`;
+            frameHtml = `<div style="color:var(--text-muted); text-align:center; padding: 40px;">رابط يوتيوب غير صالح</div>`;
         }
 
         let actionsHtml = `<div class="player-actions">`;
         
-        if (companionFiles.length > 0) {
+        if (folderUrl) {
             actionsHtml += `
-                <a href="#companion-files?courseId=${courseId}&lectureIdx=${currentIndex}" class="btn-primary">
-                    <i class="fa-solid fa-file-pdf"></i> ملفات ومرفقات المحاضرة
+                <a href="${escapeHtml(folderUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    <i class="fa-solid fa-folder-open"></i> الملفات والموارد
                 </a>
             `;
+        } else {
+             // Fallback to internal companion files if no external folder is provided
+             const companionFiles = currentLecture.companionFiles || [];
+             if (companionFiles.length > 0) {
+                 actionsHtml += `
+                     <a href="#companion-files?courseId=${courseId}&lectureIdx=${currentIndex}" class="btn-primary">
+                         <i class="fa-solid fa-file-pdf"></i> الملفات والموارد
+                     </a>
+                 `;
+             }
         }
         
         actionsHtml += `
@@ -997,7 +1012,7 @@ async function renderLecturePlayer(courseId, lectureId) {
                     <div class="video-main-panel">
                         <div id="drive-iframe-wrapper" class="embedded-player-wrapper">
                             ${frameHtml}
-                            <div id="video-watermark" class="watermark-overlay"></div>
+                            <div id="video-watermark" class="video-watermark"></div>
                         </div>
                         
                         ${actionsHtml}

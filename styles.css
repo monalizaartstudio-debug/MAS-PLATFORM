@@ -1382,15 +1382,15 @@ body.dark-theme .btn-primary {
     height: 100%;
     object-fit: cover;
 }
-.watermark-overlay {
+.video-watermark {
     position: absolute;
-    z-index: 999;
+    z-index: 10;
     pointer-events: none;
     user-select: none;
-    opacity: 0.4;
-    font-size: 14px;
+    opacity: 0.3;
+    font-size: 13px;
     color: #fff;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.4);
     padding: 4px 8px;
     border-radius: 4px;
     font-family: var(--font-outfit);
@@ -4681,7 +4681,7 @@ body.dark-theme .storage-status-badge.danger { color: #fb7185; }
         width: 100% !important;
         height: 48px !important;
     }
-    .watermark-overlay {
+    .video-watermark {
         font-size: 0.72rem !important;
         padding: 3px 8px !important;
         border-radius: 16px !important;
@@ -4724,7 +4724,7 @@ body.dark-theme .storage-status-badge.danger { color: #fb7185; }
         width: 100% !important;
     }
 
-    .watermark-overlay {
+    .video-watermark {
         font-size: 0.65rem !important;
         padding: 2px 6px !important;
         opacity: 0.6 !important;

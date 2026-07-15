@@ -1,4 +1,4 @@
-﻿import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, collection, query, where, getDocs, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
@@ -142,21 +142,7 @@ let currentProvisioningStudentPhone = null;
 // ==========================================
 // 1. GLOBAL UX PROGRESS LOADING BAR + FULL-SCREEN LOADER
 // ==========================================
-const loadingScreen = document.getElementById('loading-screen');
 
-function showLoadingScreen() {
-    if (loadingScreen) {
-        loadingScreen.classList.remove('hidden');
-        loadingScreen.classList.add('active');
-    }
-}
-
-function hideLoadingScreen() {
-    if (loadingScreen) {
-        loadingScreen.classList.remove('active');
-        loadingScreen.classList.add('hidden');
-    }
-}
 
 function startLoader() {
     loader.classList.add('active');
@@ -169,13 +155,6 @@ function finishLoader() {
         loader.classList.remove('active');
     }, 300);
 }
-
-// Dismiss loading screen once the page is fully loaded
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        hideLoadingScreen();
-    }, 600);
-});
 
 function showToast(message, type = 'success') {
     const toastContainer = document.getElementById('toast-container');
@@ -371,6 +350,28 @@ function setActiveSessionForUser(userRef, sessionId) {
 }
 
 // ==========================================
+
+// ==========================================
+// FIREBASE ERROR TRANSLATOR
+// ==========================================
+function getFirebaseErrorMessage(err) {
+    const code = err?.code || '';
+    const map = {
+        'auth/too-many-requests':     'تم حجب الحساب مؤقتاً بسبب كثرة المحاولات الفاشلة. انتظر بضع دقائق ثم حاول مجدداً، أو أعد تعيين كلمة المرور.',
+        'auth/wrong-password':        'كلمة المرور غير صحيحة. تأكد منها وحاول مرة أخرى.',
+        'auth/invalid-credential':    'رقم الهاتف أو كلمة المرور غير صحيحة.',
+        'auth/user-not-found':        'لا يوجد حساب مسجل بهذا الرقم. تحقق من الرقم أو أنشئ حساباً جديداً.',
+        'auth/user-disabled':         'تم تعطيل هذا الحساب. تواصل مع الإدارة.',
+        'auth/invalid-email':         'البريد الإلكتروني غير صالح.',
+        'auth/email-already-in-use':  'رقم الهاتف هذا مسجل مسبقاً. جرب تسجيل الدخول بدلاً من إنشاء حساب.',
+        'auth/weak-password':         'كلمة المرور ضعيفة جداً. استخدم 6 أحرف على الأقل.',
+        'auth/network-request-failed':'فشل الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مجدداً.',
+        'auth/popup-closed-by-user':  'تم إغلاق نافذة تسجيل الدخول.',
+        'auth/requires-recent-login': 'تحتاج إلى تسجيل الدخول مجدداً لإتمام هذه العملية.',
+        'auth/operation-not-allowed': 'هذه الطريقة غير مفعّلة. تواصل مع الإدارة.',
+    };
+    return map[code] || 'حدث خطأ غير متوقع. تحقق من اتصالك بالإنترنت وحاول مجدداً.';
+}
 
 async function withLoading(asyncFn) {
     startLoader();
@@ -839,21 +840,16 @@ function extractGoogleDriveFileId(url = '') {
     }
 }
 
+function buildGoogleDriveDirectVideoUrl(url = '') {
+    const fileId = extractGoogleDriveFileId(url);
+    return fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : '';
+}
+
 function buildGoogleDriveFilePreviewUrl(url = '') {
     const fileId = extractGoogleDriveFileId(url);
     return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : '';
 }
 
-async function fetchGoogleDriveFolderContents(folderId) {
-    const apiKey = "AIzaSyCTCLcb1OfLABd7ZG6l917wKlp1rJJ0NOM";
-    const url = `https://www.googleapis.com/drive/v3/files?q='${encodeURIComponent(folderId)}'+in+parents+and+trashed=false&fields=files(id,name,mimeType,webViewLink)&key=${apiKey}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Google API returned status ${response.status}`);
-    }
-    const data = await response.json();
-    return data.files || [];
-}
 
 function getFileIconAndColor(mimeType, name) {
     const mime = mimeType || '';
@@ -947,104 +943,59 @@ async function renderLecturePlayer(courseId, lectureId) {
 
         const videoUrl = currentLecture.videoUrl || '';
         const folderUrl = currentLecture.folderUrl || currentLecture.driveFolderUrl || '';
-        const folderId = extractGoogleDriveFolderId(folderUrl);
-        
-        let files = [];
-        let videoFile = null;
-        let fetchFailed = false;
 
-        if (folderId) {
-            try {
-                files = await fetchGoogleDriveFolderContents(folderId);
-                videoFile = files.find(file => {
-                    const mime = file.mimeType || '';
-                    const name = file.name || '';
-                    const isVideoMime = mime.startsWith('video/');
-                    const isVideoExt = /\.(mp4|webm|mkv|mov|avi|flv)$/i.test(name);
-                    return isVideoMime || isVideoExt;
-                });
-            } catch (err) {
-                console.error("Google Drive API v3 fetch failed, using fallback:", err);
-                fetchFailed = true;
-            }
-        }
-
-        let frameHtml = '';
+        // Build Drive preview URL from videoUrl via regex — zero API calls
         const previewUrl = buildGoogleDriveFilePreviewUrl(videoUrl);
-        if (previewUrl) {
-            frameHtml = `<iframe id="course-drive-iframe" class="drive-folder-iframe" src="${escapeHtml(previewUrl)}" allow="autoplay" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
-        } else if (videoFile) {
-            frameHtml = `<iframe id="course-drive-iframe" class="drive-folder-iframe" src="https://drive.google.com/file/d/${videoFile.id}/preview" allow="autoplay" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
-        } else {
-            const fallbackEmbedUrl = buildGoogleDriveFolderEmbedUrl(folderUrl);
-            frameHtml = fallbackEmbedUrl
-                ? `<iframe id="course-drive-iframe" class="drive-folder-iframe" src="${escapeHtml(fallbackEmbedUrl)}" allow="autoplay" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`
-                : `<div class="drive-folder-error"><i class="fa-solid fa-folder-xmark"></i><h3>رابط فيديو Google Drive غير صالح</h3><p>أعد إضافة المحاضرة باستخدام رابط فيديو صالح ورابط مجلد المرفقات.</p></div>`;
+
+        const companionFiles = currentLecture.companionFiles || [];
+
+        let directStreamUrl = '';
+        const fileIdMatch = videoUrl.match(/[-\w]{25,}/);
+        if (fileIdMatch) {
+            const fileId = fileIdMatch[0];
+            directStreamUrl = `https://docs.google.com/uc?export=download&id=${fileId}`;
         }
 
-        // Companion files trigger button
+        let playerHtml = '';
+        if (directStreamUrl) {
+            playerHtml = `
+                <video id="lecture-native-player" controls controlsList="nodownload" disablePictureInPicture playsinline src="${directStreamUrl}"></video>
+                <div id="video-watermark" class="watermark-overlay"></div>
+            `;
+        } else if (videoUrl) {
+            playerHtml = `
+                <video id="lecture-native-player" controls controlsList="nodownload" disablePictureInPicture playsinline src="${videoUrl}"></video>
+                <div id="video-watermark" class="watermark-overlay"></div>
+            `;
+        } else {
+            playerHtml = `<div style="color:var(--text-muted); text-align:center; padding: 40px;">رابط الفيديو غير متوفر</div>`;
+        }
+
         let companionButtonHtml = '';
-        if (folderUrl) {
+        if (companionFiles.length > 0) {
             companionButtonHtml = `
-                <div style="text-align: center; margin: 15px auto 25px auto; max-width: 800px; width: 100%;">
-                    <a href="${escapeHtml(folderUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; font-size: 0.95rem; border-radius: 10px; text-decoration: none; font-weight: 700; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);">
-                        <i class="fa-solid fa-folder-open"></i>
-                        <span>ملفات ومرفقات المحاضرة</span>
+                <div style="text-align: center; margin: 15px auto 25px auto;">
+                    <a href="#companion-files?courseId=${courseId}&lectureIdx=${currentIndex}" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-file-pdf"></i> ملحقات المحاضرة
                     </a>
                 </div>
             `;
         }
 
-        let resourcesHtml = '';
-        if (files.length > 0) {
-            const otherFiles = files.filter(f => f.id !== (videoFile?.id || ''));
-            if (otherFiles.length > 0) {
-                resourcesHtml = `
-                    <div class="video-info-box" style="margin-top: 20px; padding: 24px; border-radius: 16px;">
-                        <h3 style="font-weight: 800; font-size: 1.15rem; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-paperclip" style="color: var(--accent-cyan);"></i>
-                            مرفقات وملحقات الدرس المتاحة
-                        </h3>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                `;
-                otherFiles.forEach(file => {
-                    const styleMeta = getFileIconAndColor(file.mimeType, file.name);
-                    resourcesHtml += `
-                        <div class="resource-card">
-                            <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-                                <i class="fa-solid ${styleMeta.icon}" style="font-size:1.45rem; color:${styleMeta.color};"></i>
-                                <span style="font-size:0.9rem; font-weight:600; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; direction:ltr; text-align:right; flex-grow:1;">${escapeHtml(file.name)}</span>
-                            </div>
-                            <a href="${file.webViewLink}" target="_blank" class="btn-primary" style="padding:8px 16px; font-size:0.8rem; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-                                <i class="fa-solid fa-eye"></i>
-                                <span>عرض / تحميل</span>
-                            </a>
-                        </div>
-                    `;
-                });
-                resourcesHtml += `</div></div>`;
-            }
-        }
-
         container.innerHTML = `
             <header class="player-nav-header">
                 <button class="btn-back" onclick="window.location.hash = '#watch-course?courseId=${courseId}'">
-                    <i class="fa-solid fa-arrow-right"></i>
-                    <span>العودة لقائمة الدروس</span>
+                    <i class="fa-solid fa-arrow-right"></i> العودة لقائمة الدروس
                 </button>
-                <h3 class="player-lesson-title">الدرس ${lessonNumber}: ${escapeHtml(currentLecture.title || '')}</h3>
+                <div class="player-lesson-title" style="margin: 0; text-align: right; flex: 1;">
+                    الدرس ${lessonNumber}: ${escapeHtml(currentLecture.title || 'محاضرة')}
+                </div>
             </header>
-            
-            <div class="video-container">
-                <div class="video-grid-layout">
+            <div class="watch-course-container">
+                <div class="video-layout">
                     <div class="video-main-panel">
                         <div id="drive-iframe-wrapper" class="embedded-player-wrapper">
-                            ${frameHtml}
-                            <div id="video-watermark" class="watermark-overlay"></div>
-                            <div class="player-security-shield"></div>
-                            <button id="btn-secure-fullscreen" class="btn-secure-fullscreen" aria-label="ملء الشاشة">
-                                <i class="fa-solid fa-expand"></i>
-                            </button>
+                            ${playerHtml}
                         </div>
                         
                         ${companionButtonHtml}
@@ -1053,8 +1004,6 @@ async function renderLecturePlayer(courseId, lectureId) {
                             <h2>${escapeHtml(currentLecture.title || '')}</h2>
                             <p>${escapeHtml(currentLecture.description || 'لا يوجد وصف متاح للمحاضرة.')}</p>
                         </div>
-                        
-                        ${resourcesHtml}
                     </div>
                     ${sidebarHtml}
                 </div>
@@ -1063,43 +1012,10 @@ async function renderLecturePlayer(courseId, lectureId) {
         
         startWatermark();
         
-        const btnSecureFullscreen = document.getElementById('btn-secure-fullscreen');
-        if (btnSecureFullscreen) {
-            btnSecureFullscreen.addEventListener('click', () => {
-                const wrapper = document.getElementById('drive-iframe-wrapper');
-                if (!wrapper) return;
-                
-                if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                    if (wrapper.requestFullscreen) {
-                        wrapper.requestFullscreen();
-                    } else if (wrapper.webkitRequestFullscreen) {
-                        wrapper.webkitRequestFullscreen();
-                    } else if (wrapper.msRequestFullscreen) {
-                        wrapper.msRequestFullscreen();
-                    }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                }
-            });
-            
-            // Update button text/icon based on fullscreen state
-            const updateFullscreenUI = () => {
-                const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-                if (isFs) {
-                    btnSecureFullscreen.innerHTML = '<i class="fa-solid fa-compress"></i>';
-                } else {
-                    btnSecureFullscreen.innerHTML = '<i class="fa-solid fa-expand"></i>';
-                }
-            };
-            document.addEventListener('fullscreenchange', updateFullscreenUI);
-            document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
-            document.addEventListener('msfullscreenchange', updateFullscreenUI);
+        // Prevent right-click on the native video player to discourage downloading
+        const nativePlayer = document.getElementById('lecture-native-player');
+        if (nativePlayer) {
+            nativePlayer.addEventListener('contextmenu', e => e.preventDefault());
         }
         
     } catch (e) {
@@ -1260,13 +1176,17 @@ if (formLogin) {
                 currentUser = buildStudentSession(authCredential.user.uid, studentRecord.data);
                 sessionStorage.setItem('monaliza_user', JSON.stringify(currentUser));
                 saveLocalSessionId(sessionId);
-                await setActiveSessionForUser(studentRecord.ref, sessionId);
+
+                // Navigate instantly — don't wait for DB write
+                window.location.hash = '#/dashboard';
+
+                // Fire-and-forget background tasks
+                setActiveSessionForUser(studentRecord.ref, sessionId).catch(e => console.warn('Session write:', e));
                 initializeWelcomeNotification();
                 attachSessionWatcher(authCredential.user.uid);
-                window.location.hash = '#/dashboard';
             } catch (err) {
                 console.error("Login Error:", err);
-                showError(inputLoginPassword, 'err-login-password', err.message || 'فشل تسجيل الدخول. يرجى التحقق من اتصال الإنترنت.');
+                showError(inputLoginPassword, 'err-login-password', getFirebaseErrorMessage(err));
             } finally {
                 studentAuthInProgress = false;
             }
@@ -1313,7 +1233,6 @@ if (formRegister) {
             try {
                 const authCredential = await createUserWithEmailAndPassword(auth, getStudentAuthEmail(phone), password);
                 const sessionId = generateSessionId();
-                const userRef = doc(db, "users", authCredential.user.uid);
                 const newUserData = {
                     name,
                     phone,
@@ -1324,19 +1243,24 @@ if (formRegister) {
                     authProvider: 'firebase_email_password',
                     createdAt: Date.now()
                 };
-                await setDoc(userRef, newUserData);
                 currentUser = buildStudentSession(authCredential.user.uid, newUserData);
                 sessionStorage.setItem('monaliza_user', JSON.stringify(currentUser));
                 saveLocalSessionId(sessionId);
+
+                // Navigate instantly — write to Firestore in background
+                window.location.hash = '#/dashboard';
+
+                // Fire-and-forget background tasks
+                const userRef = doc(db, "users", authCredential.user.uid);
+                setDoc(userRef, newUserData).catch(e => console.warn('User doc write:', e));
                 initializeWelcomeNotification();
                 attachSessionWatcher(authCredential.user.uid);
-                window.location.hash = '#/dashboard';
             } catch (err) {
                 console.error("Register Error:", err);
                 if (err?.code === 'auth/email-already-in-use') {
-                    showError(inputRegPhone, 'err-reg-phone', 'هذا الرقم مسجل بالفعل، يرجى تسجيل الدخول');
+                    showError(inputRegPhone, 'err-reg-phone', 'هذا الرقم مسجل بالفعل، يرجى تسجيل الدخول بدلاً من إنشاء حساب');
                 } else {
-                    alert('فشل إنشاء الحساب.');
+                    showError(inputRegPhone, 'err-reg-phone', getFirebaseErrorMessage(err));
                 }
             } finally {
                 studentAuthInProgress = false;
@@ -1918,7 +1842,11 @@ if (formAdminLogin) {
                 window.location.hash = `#/${adminData.loginHash || 'admin'}`;
             } catch (err) {
                 console.error("Admin Login Auth Error:", err);
-                showError(inputAdminPassword, 'err-admin-password', 'بيانات لوحة الادمن غير صحيحة.');
+                if (err?.code === 'auth/too-many-requests') {
+                    showError(inputAdminPassword, 'err-admin-password', getFirebaseErrorMessage(err));
+                } else {
+                    showError(inputAdminPassword, 'err-admin-password', 'بيانات لوحة الادمن غير صحيحة.');
+                }
             }
         });
     });
@@ -3000,13 +2928,6 @@ injectCustomHashInputToHtml();
 setupStudentMobileBurgerMenu();
 initTheme();
 handleRouting();
-
-
-
-
-
-
-
 
 
 

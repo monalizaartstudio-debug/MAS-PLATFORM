@@ -1,4 +1,4 @@
-﻿rules_version = '2';
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -79,6 +79,17 @@ service cloud.firestore {
     // 5. الطلبات القديمة (قراءة وكتابة للأدمن فقط لمعالجة الترحيل ومراجعة الأرشيف)
     match /orders/{orderId} {
       allow read, write: if isAdmin();
+    }
+
+    // 6. مجموعات المتجر (الأقسام والمنتجات): قراءة للجميع وصلاحية الكتابة والتعديل للمستخدم المسجل أو الأدمن
+    match /store_categories/{categoryId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /store_products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null;
     }
 
     // أي collection تانية غير مذكورة هنا: ممنوعة تماماً افتراضياً.

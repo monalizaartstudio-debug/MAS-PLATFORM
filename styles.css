@@ -426,8 +426,8 @@ body.dark-theme .btn-primary {
     font-size: 0.82rem;
     font-weight: 600;
     text-align: right;
-    margin-top: -12px;
-    margin-bottom: 16px;
+    margin-top: 0;
+    margin-bottom: 0;
     opacity: 0;
     max-height: 0;
     overflow: hidden;
@@ -437,7 +437,7 @@ body.dark-theme .btn-primary {
     opacity: 1;
     max-height: 24px;
     margin-top: -8px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
 }
 
 /* ==========================================================================
@@ -537,10 +537,7 @@ body.dark-theme .btn-primary {
     animation: fadeIn 0.4s ease;
 }
 .auth-form .input-group {
-    margin-bottom: 6px;
-}
-.auth-form .error-feedback {
-    margin-bottom: 6px;
+    margin-bottom: 14px;
 }
 
 @keyframes fadeIn {

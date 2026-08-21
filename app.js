@@ -406,6 +406,8 @@ function initTheme() {
     document.body.classList.toggle('light-theme', !isDark);
     const icon = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     if (btnThemeToggle) btnThemeToggle.innerHTML = icon;
+    const btnLandingTheme = document.getElementById('btn-landing-theme-toggle');
+    if (btnLandingTheme) btnLandingTheme.innerHTML = icon;
     // Admin theme buttons
     const btnAdminTheme = document.getElementById('btn-admin-theme-toggle');
     const btnAdminThemeMobile = document.getElementById('btn-admin-theme-toggle-mobile');
@@ -416,35 +418,27 @@ function initTheme() {
 
 function applyThemeToggle() {
     const isDark = document.body.classList.contains('dark-theme');
-    if (isDark) {
-        document.body.classList.remove('dark-theme');
-        document.body.classList.add('light-theme');
-        localStorage.setItem('monaliza_theme', 'light');
-        const icon = '<i class="fa-solid fa-moon"></i>';
-        if (btnThemeToggle) btnThemeToggle.innerHTML = icon;
-        const btnAdminTheme = document.getElementById('btn-admin-theme-toggle');
-        const btnAdminThemeMobile = document.getElementById('btn-admin-theme-toggle-mobile');
-        if (btnAdminTheme) btnAdminTheme.innerHTML = icon;
-        if (btnAdminThemeMobile) btnAdminThemeMobile.innerHTML = icon;
-        updateLogosForTheme('light');
-    } else {
-        document.body.classList.remove('light-theme');
-        document.body.classList.add('dark-theme');
-        localStorage.setItem('monaliza_theme', 'dark');
-        const icon = '<i class="fa-solid fa-sun"></i>';
-        if (btnThemeToggle) btnThemeToggle.innerHTML = icon;
-        const btnAdminTheme = document.getElementById('btn-admin-theme-toggle');
-        const btnAdminThemeMobile = document.getElementById('btn-admin-theme-toggle-mobile');
-        if (btnAdminTheme) btnAdminTheme.innerHTML = icon;
-        if (btnAdminThemeMobile) btnAdminThemeMobile.innerHTML = icon;
-        updateLogosForTheme('dark');
-    }
+    const nextTheme = isDark ? 'light' : 'dark';
+    document.body.classList.toggle('dark-theme', !isDark);
+    document.body.classList.toggle('light-theme', isDark);
+    localStorage.setItem('monaliza_theme', nextTheme);
+    const icon = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+    if (btnThemeToggle) btnThemeToggle.innerHTML = icon;
+    const btnLandingTheme = document.getElementById('btn-landing-theme-toggle');
+    if (btnLandingTheme) btnLandingTheme.innerHTML = icon;
+    const btnAdminTheme = document.getElementById('btn-admin-theme-toggle');
+    const btnAdminThemeMobile = document.getElementById('btn-admin-theme-toggle-mobile');
+    if (btnAdminTheme) btnAdminTheme.innerHTML = icon;
+    if (btnAdminThemeMobile) btnAdminThemeMobile.innerHTML = icon;
+    updateLogosForTheme(nextTheme);
 }
 
 if (btnThemeToggle) btnThemeToggle.addEventListener('click', applyThemeToggle);
 
-// Admin theme toggle buttons
 document.addEventListener('click', (e) => {
+    if (e.target.closest('#btn-landing-theme-toggle')) {
+        applyThemeToggle();
+    }
     if (e.target.closest('#btn-admin-theme-toggle') || e.target.closest('#btn-admin-theme-toggle-mobile')) {
         applyThemeToggle();
     }
@@ -627,7 +621,6 @@ function applyStoreTranslations(lang) {
         }
     });
 
-    // Also update modal placeholders and texts if open
     const modalDetails = document.getElementById('modal-product-details');
     if (modalDetails) {
         modalDetails.querySelectorAll('[data-i18n]').forEach(el => {
@@ -668,35 +661,61 @@ let currentDetailQty = 1;
 // WhatsApp Business Number for Studio orders: 01098310340 -> 201098310340
 const STUDIO_WHATSAPP_PHONE = "201098310340";
 
+// Flag to prevent concurrent or repeated store loads
+let _storeDataLoaded = false;
+let _storeLoadInProgress = false;
+
 async function loadCustomerStore() {
     setupCustomerStoreListeners();
-    await refreshCustomerStoreData();
+    // Only fetch data if not already loaded or in progress
+    if (!_storeLoadInProgress) {
+        await refreshCustomerStoreData();
+    }
 }
 
 function setupCustomerStoreListeners() {
     // Search input with micro-debounce for performance
     let searchDebounceTimer = null;
-    const searchInput = document.getElementById('store-product-search-input');
-    if (searchInput && !searchInput.dataset.listenerAttached) {
-        searchInput.dataset.listenerAttached = 'true';
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                searchStoreKeyword = (e.target.value || '').trim().toLowerCase();
-                renderCustomerProductsGrid();
-            }, 120);
-        });
-    }
+    const searchInputs = [
+        document.getElementById('store-product-search-input'),
+        document.getElementById('landing-store-search-input')
+    ];
+    
+    searchInputs.forEach(input => {
+        if (input && !input.dataset.listenerAttached) {
+            input.dataset.listenerAttached = 'true';
+            input.addEventListener('input', (e) => {
+                clearTimeout(searchDebounceTimer);
+                searchDebounceTimer = setTimeout(() => {
+                    searchStoreKeyword = (e.target.value || '').trim().toLowerCase();
+                    // Sync other search input
+                    searchInputs.forEach(other => {
+                        if (other && other !== e.target) other.value = e.target.value;
+                    });
+                    renderCustomerProductsGrid();
+                }, 120);
+            });
+        }
+    });
 
     // Price Sort Dropdown
-    const priceSortSelect = document.getElementById('priceSortSelect');
-    if (priceSortSelect && !priceSortSelect.dataset.listenerAttached) {
-        priceSortSelect.dataset.listenerAttached = 'true';
-        priceSortSelect.addEventListener('change', (e) => {
-            currentStoreSortOrder = e.target.value;
-            renderCustomerProductsGrid();
-        });
-    }
+    const sortSelects = [
+        document.getElementById('priceSortSelect'),
+        document.getElementById('landingPriceSortSelect')
+    ];
+
+    sortSelects.forEach(sel => {
+        if (sel && !sel.dataset.listenerAttached) {
+            sel.dataset.listenerAttached = 'true';
+            sel.addEventListener('change', (e) => {
+                currentStoreSortOrder = e.target.value;
+                sortSelects.forEach(other => {
+                    if (other && other !== e.target) other.value = e.target.value;
+                });
+                renderCustomerProductsGrid();
+            });
+        }
+    });
 
     // Product Details Modal: Close & Cancel buttons
     const btnCloseDetails = document.getElementById('btn-close-product-details');
@@ -750,16 +769,25 @@ function setupCustomerStoreListeners() {
 }
 
 async function refreshCustomerStoreData() {
-    const productsGrid = document.getElementById('store-products-grid');
-    if (productsGrid) {
-        productsGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-sub);">
-                <i class="fa-solid fa-wand-magic-sparkles fa-spin" style="font-size: 2.2rem; color: var(--accent-cyan); margin-bottom: 14px; display: block;"></i>
-                <h4 style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">جاري تحميل الأعمال الفنية...</h4>
-                <p style="font-size: 0.9rem; margin: 0;">يتم جلب أحدث المنتجات الهاند ميد من استوديو موناليزا</p>
-            </div>
-        `;
-    }
+    if (_storeLoadInProgress) return; // Prevent concurrent loads
+    _storeLoadInProgress = true;
+
+    const grids = [
+        document.getElementById('store-products-grid'),
+        document.getElementById('landing-store-products-grid')
+    ];
+    
+    grids.forEach(grid => {
+        if (grid) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-sub);">
+                    <i class="fa-solid fa-wand-magic-sparkles fa-spin" style="font-size: 2.2rem; color: var(--accent-cyan); margin-bottom: 14px; display: block;"></i>
+                    <h4 style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">جاري تحميل الأعمال الفنية...</h4>
+                    <p style="font-size: 0.9rem; margin: 0;">يتم جلب أحدث المنتجات الهاند ميد من استوديو موناليزا</p>
+                </div>
+            `;
+        }
+    });
 
     try {
         const [categories, products] = await Promise.all([
@@ -769,87 +797,107 @@ async function refreshCustomerStoreData() {
 
         customerCategoriesCache = categories;
         customerProductsCache = products;
+        _storeDataLoaded = true;
 
         renderCustomerCategoryChips();
         renderCustomerProductsGrid();
     } catch (err) {
-        console.error("Error loading customer store data:", err);
-        if (productsGrid) {
-            productsGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--danger);">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.2rem; margin-bottom: 14px; display: block;"></i>
-                    <h4 style="font-weight: 700; margin-bottom: 6px;">تعذر تحميل المنتجات حالياً</h4>
-                    <p style="font-size: 0.9rem; margin: 0;">يرجى المحاولة مرة أخرى أو مراجعة اتصال الإنترنت.</p>
-                </div>
-            `;
-        }
+        console.error("Customer store load error:", err);
+        grids.forEach(grid => {
+            if (grid) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--danger); background: var(--card-bg); border-radius: 20px; border: 1.5px dashed var(--danger);">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.2rem; margin-bottom: 14px; display: block;"></i>
+                        <h4 style="font-weight: 700; margin-bottom: 6px;">تعذر تحميل المنتجات حالياً</h4>
+                        <p style="font-size: 0.9rem; margin: 0;">يرجى المحاولة مرة أخرى أو مراجعة اتصال الإنترنت.</p>
+                    </div>
+                `;
+            }
+        });
+    } finally {
+        _storeLoadInProgress = false;
     }
 }
 
+
 function renderCustomerCategoryChips() {
-    const bar = document.getElementById('store-categories-bar');
-    if (!bar) return;
-
+    const bars = [
+        document.getElementById('store-categories-bar'),
+        document.getElementById('landing-store-categories-bar')
+    ];
+    
     const allCount = customerProductsCache.length;
-    const allChipCount = document.getElementById('chip-count-all');
-    if (allChipCount) allChipCount.innerText = allCount;
+    const allChipCounts = [
+        document.getElementById('chip-count-all'),
+        document.getElementById('landing-chip-count-all')
+    ];
+    allChipCounts.forEach(c => { if (c) c.innerText = allCount; });
 
-    // Keep the "All" button
-    const allBtn = bar.querySelector('[data-cat-id="all"]');
-    if (allBtn && !allBtn.dataset.listenerAttached) {
-        allBtn.dataset.listenerAttached = 'true';
-        allBtn.addEventListener('click', () => {
-            selectedStoreCategoryId = 'all';
-            updateActiveCategoryChip();
-            renderCustomerProductsGrid();
+    bars.forEach(bar => {
+        if (!bar) return;
+
+        // Keep the "All" button
+        const allBtn = bar.querySelector('[data-cat-id="all"]');
+        if (allBtn && !allBtn.dataset.listenerAttached) {
+            allBtn.dataset.listenerAttached = 'true';
+            allBtn.addEventListener('click', () => {
+                selectedStoreCategoryId = 'all';
+                updateActiveCategoryChip();
+                renderCustomerProductsGrid();
+            });
+        }
+
+        // Remove old dynamic chips
+        bar.querySelectorAll('.store-category-chip:not([data-cat-id="all"])').forEach(c => c.remove());
+
+        customerCategoriesCache.forEach(cat => {
+            const count = customerProductsCache.filter(p => p.categoryId === cat.id).length;
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = `store-category-chip ${selectedStoreCategoryId === cat.id ? 'active' : ''}`;
+            chip.setAttribute('data-cat-id', cat.id);
+
+            const iconHtml = cat.icon?.startsWith('http') 
+                ? `<img src="${cat.icon}" alt="" style="width: 18px; height: 18px; border-radius: 4px; object-fit: cover;">`
+                : `<i class="${cat.icon || 'fa-solid fa-shapes'}"></i>`;
+
+            const nameLabel = currentStoreLang === 'en' && cat.name_en ? cat.name_en : cat.name_ar;
+
+            chip.innerHTML = `
+                ${iconHtml}
+                <span>${nameLabel}</span>
+                <span class="store-chip-count">${count}</span>
+            `;
+
+            chip.addEventListener('click', () => {
+                selectedStoreCategoryId = cat.id;
+                updateActiveCategoryChip();
+                renderCustomerProductsGrid();
+            });
+
+            bar.appendChild(chip);
         });
-    }
-
-    // Remove old dynamic chips
-    bar.querySelectorAll('.store-category-chip:not([data-cat-id="all"])').forEach(c => c.remove());
-
-    customerCategoriesCache.forEach(cat => {
-        const count = customerProductsCache.filter(p => p.categoryId === cat.id).length;
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = `store-category-chip ${selectedStoreCategoryId === cat.id ? 'active' : ''}`;
-        chip.setAttribute('data-cat-id', cat.id);
-
-        const iconHtml = cat.icon?.startsWith('http') 
-            ? `<img src="${cat.icon}" alt="" style="width: 18px; height: 18px; border-radius: 4px; object-fit: cover;">`
-            : `<i class="${cat.icon || 'fa-solid fa-shapes'}"></i>`;
-
-        const nameLabel = currentStoreLang === 'en' && cat.name_en ? cat.name_en : cat.name_ar;
-
-        chip.innerHTML = `
-            ${iconHtml}
-            <span>${nameLabel}</span>
-            <span class="store-chip-count">${count}</span>
-        `;
-
-        chip.addEventListener('click', () => {
-            selectedStoreCategoryId = cat.id;
-            updateActiveCategoryChip();
-            renderCustomerProductsGrid();
-        });
-
-        bar.appendChild(chip);
     });
 
     updateActiveCategoryChip();
 }
 
 function updateActiveCategoryChip() {
-    const bar = document.getElementById('store-categories-bar');
-    if (!bar) return;
+    const bars = [
+        document.getElementById('store-categories-bar'),
+        document.getElementById('landing-store-categories-bar')
+    ];
 
-    bar.querySelectorAll('.store-category-chip').forEach(chip => {
-        const catId = chip.getAttribute('data-cat-id');
-        if (catId === selectedStoreCategoryId) {
-            chip.classList.add('active');
-        } else {
-            chip.classList.remove('active');
-        }
+    bars.forEach(bar => {
+        if (!bar) return;
+        bar.querySelectorAll('.store-category-chip').forEach(chip => {
+            const catId = chip.getAttribute('data-cat-id');
+            if (catId === selectedStoreCategoryId) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
     });
 
     // Update section title & subtitle based on selected category
@@ -871,8 +919,10 @@ function updateActiveCategoryChip() {
 }
 
 function renderCustomerProductsGrid() {
-    const grid = document.getElementById('store-products-grid');
-    if (!grid) return;
+    const grids = [
+        document.getElementById('store-products-grid'),
+        document.getElementById('landing-store-products-grid')
+    ];
 
     let filtered = [...customerProductsCache];
 
@@ -912,72 +962,75 @@ function renderCustomerProductsGrid() {
         });
     }
 
-    if (!filtered.length) {
-        const noItemsMsg = STORE_TRANSLATIONS[currentStoreLang].no_products_found || 'لا توجد منتجات مطابقة في هذا القسم حالياً.';
-        grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-sub); background: var(--card-bg); border-radius: 24px; border: 1.5px dashed var(--card-border);">
-                <i class="fa-solid fa-palette" style="font-size: 2.8rem; margin-bottom: 16px; opacity: 0.4; display: block;"></i>
-                <h3 style="font-weight: 800; color: var(--text-main); margin-bottom: 8px;">${noItemsMsg}</h3>
-                <p style="font-size: 0.95rem; margin: 0;">يمكنك تصفح باقي الأقسام أو البحث بكلمات أخرى.</p>
-            </div>
-        `;
-        return;
-    }
+    grids.forEach(grid => {
+        if (!grid) return;
 
-    grid.innerHTML = filtered.map(prod => {
-        const isEn = currentStoreLang === 'en';
-        const title = isEn && prod.title_en ? prod.title_en : prod.title_ar;
-        const desc = isEn && prod.desc_en ? prod.desc_en : (prod.desc_ar || '');
-        const cat = customerCategoriesCache.find(c => c.id === prod.categoryId);
-        const catName = cat ? (isEn && cat.name_en ? cat.name_en : cat.name_ar) : (isEn && prod.categoryName_en ? prod.categoryName_en : (prod.categoryName_ar || 'Handmade'));
-        const badge = isEn && prod.badge_en ? prod.badge_en : (prod.badge_ar || '');
-        const imgUrl = prod.mainImage || 'assets/course_logo.jpeg';
-        const priceFormatted = Number(prod.price || 0).toFixed(2);
-        const currencyText = STORE_TRANSLATIONS[currentStoreLang].egp_short || 'ج.م';
-        const viewDetailsText = STORE_TRANSLATIONS[currentStoreLang].view_details_btn || 'عرض التفاصيل';
-        const isOutOfStock = prod.isAvailable === false;
-        const outOfStockText = STORE_TRANSLATIONS[currentStoreLang].out_of_stock_exclusive || 'غير متوفر حالياً';
-        const cardClass = `store-product-card ${isOutOfStock ? 'out-of-stock' : ''}`;
-
-        return `
-            <div class="${cardClass}" data-product-id="${prod.id}">
-                <div class="product-card-thumb-wrap">
-                    <img src="${imgUrl}" alt="${title}" class="product-card-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='assets/course_logo.jpeg'">
-                    ${isOutOfStock 
-                        ? `<div class="product-card-out-exclusive-badge"><i class="fa-solid fa-ban"></i> ${outOfStockText}</div>`
-                        : (badge ? `<div class="product-card-badge">${badge}</div>` : '')
-                    }
+        if (!filtered.length) {
+            const noItemsMsg = STORE_TRANSLATIONS[currentStoreLang].no_products_found || 'لا توجد منتجات مطابقة في هذا القسم حالياً.';
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-sub); background: var(--card-bg); border-radius: 24px; border: 1.5px dashed var(--card-border);">
+                    <i class="fa-solid fa-palette" style="font-size: 2.8rem; margin-bottom: 16px; opacity: 0.4; display: block;"></i>
+                    <h3 style="font-weight: 800; color: var(--text-main); margin-bottom: 8px;">${noItemsMsg}</h3>
+                    <p style="font-size: 0.95rem; margin: 0;">يمكنك تصفح باقي الأقسام أو البحث بكلمات أخرى.</p>
                 </div>
-                <div class="product-card-body">
-                    <div class="product-card-category">
-                        <i class="fa-solid fa-palette"></i> <span>${catName}</span>
+            `;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(prod => {
+            const isEn = currentStoreLang === 'en';
+            const title = isEn && prod.title_en ? prod.title_en : prod.title_ar;
+            const desc = isEn && prod.desc_en ? prod.desc_en : (prod.desc_ar || '');
+            const cat = customerCategoriesCache.find(c => c.id === prod.categoryId);
+            const catName = cat ? (isEn && cat.name_en ? cat.name_en : cat.name_ar) : (isEn && prod.categoryName_en ? prod.categoryName_en : (prod.categoryName_ar || 'Handmade'));
+            const imgUrl = prod.mainImage || 'assets/course_logo.jpeg';
+            const priceFormatted = Number(prod.price || 0).toFixed(2);
+            const currencyText = STORE_TRANSLATIONS[currentStoreLang].egp_short || 'ج.م';
+            const viewDetailsText = STORE_TRANSLATIONS[currentStoreLang].view_details_btn || 'عرض التفاصيل';
+            const isOutOfStock = prod.isAvailable === false;
+            const outOfStockText = STORE_TRANSLATIONS[currentStoreLang].out_of_stock_exclusive || 'غير متوفر حالياً';
+            const cardClass = `store-product-card ${isOutOfStock ? 'out-of-stock' : ''}`;
+
+            return `
+                <div class="${cardClass}" data-product-id="${prod.id}">
+                    <div class="product-card-thumb-wrap">
+                        <img src="${imgUrl}" alt="${title}" class="product-card-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='assets/course_logo.jpeg'">
+                        ${isOutOfStock 
+                            ? `<div class="product-card-out-exclusive-badge"><i class="fa-solid fa-ban"></i> ${outOfStockText}</div>`
+                            : ''
+                        }
                     </div>
-                    <h3 class="product-card-title">${title}</h3>
-                    <p class="product-card-desc">${desc || 'إبداع فني هاند ميد مصمم بكل حب وإتقان من استوديو موناليزا.'}</p>
-                    <div class="product-card-footer">
-                        <div class="product-card-pricing">
-                            <div class="product-card-price">
-                                <span>${priceFormatted}</span>
-                                <span class="product-card-currency">${currencyText}</span>
-                            </div>
-                            ${prod.oldPrice ? `<span class="product-card-old-price">${Number(prod.oldPrice).toFixed(2)} ${currencyText}</span>` : ''}
+                    <div class="product-card-body">
+                        <div class="product-card-category">
+                            <i class="fa-solid fa-palette"></i> <span>${catName}</span>
                         </div>
-                        <button type="button" class="btn-product-details">
-                            <i class="fa-solid fa-eye"></i>
-                            <span>${viewDetailsText}</span>
-                        </button>
+                        <h3 class="product-card-title">${title}</h3>
+                        <p class="product-card-desc">${desc || 'إبداع فني هاند ميد مصمم بكل حب وإتقان من استوديو موناليزا.'}</p>
+                        <div class="product-card-footer">
+                            <div class="product-card-pricing">
+                                <div class="product-card-price">
+                                    <span>${priceFormatted}</span>
+                                    <span class="product-card-currency">${currencyText}</span>
+                                </div>
+                                ${prod.oldPrice ? `<span class="product-card-old-price">${Number(prod.oldPrice).toFixed(2)} ${currencyText}</span>` : ''}
+                            </div>
+                            <button type="button" class="btn-product-details">
+                                <i class="fa-solid fa-eye"></i>
+                                <span>${viewDetailsText}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-    }).join('');
+            `;
+        }).join('');
 
-    // Attach click handlers to open product modal
-    grid.querySelectorAll('.store-product-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const prodId = card.getAttribute('data-product-id');
-            const product = customerProductsCache.find(p => p.id === prodId);
-            if (product) openCustomerProductModal(product);
+        // Attach click handlers to open product modal
+        grid.querySelectorAll('.store-product-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const prodId = card.getAttribute('data-product-id');
+                const product = customerProductsCache.find(p => p.id === prodId);
+                if (product) openCustomerProductModal(product);
+            });
         });
     });
 }
@@ -993,7 +1046,6 @@ function openCustomerProductModal(product) {
     const desc = isEn && product.desc_en ? product.desc_en : (product.desc_ar || '');
     const cat = customerCategoriesCache.find(c => c.id === product.categoryId);
     const catName = cat ? (isEn && cat.name_en ? cat.name_en : cat.name_ar) : (isEn && product.categoryName_en ? product.categoryName_en : (product.categoryName_ar || 'Handmade'));
-    const badge = isEn && product.badge_en ? product.badge_en : (product.badge_ar || '');
     const imgUrl = product.mainImage || 'assets/course_logo.jpeg';
     const isOutOfStock = product.isAvailable === false;
 
@@ -1015,23 +1067,25 @@ function openCustomerProductModal(product) {
         if (isOutOfStock) {
             badgeEl.innerText = STORE_TRANSLATIONS[currentStoreLang].out_of_stock_exclusive || 'غير متوفر حالياً';
             badgeEl.classList.remove('hidden');
+            badgeEl.style.display = 'inline-flex';
             badgeEl.style.background = '#ef4444';
-        } else if (badge) {
-            badgeEl.innerText = badge;
-            badgeEl.classList.remove('hidden');
-            badgeEl.style.background = '';
         } else {
             badgeEl.classList.add('hidden');
+            badgeEl.style.display = 'none';
+            badgeEl.innerText = '';
         }
     }
 
     if (stockEl) {
         if (isOutOfStock) {
             stockEl.className = 'product-details-stock-tag badge-out-stock';
-            stockEl.innerHTML = `<i class="fa-solid fa-xmark" style="margin-left:4px;"></i> ${STORE_TRANSLATIONS[currentStoreLang].out_of_stock || 'غير متوفر حالياً'}`;
+            stockEl.innerHTML = `<i class="fa-solid fa-ban" style="margin-left:4px;"></i> ${STORE_TRANSLATIONS[currentStoreLang].out_of_stock_exclusive || 'غير متوفر حالياً'}`;
+            stockEl.classList.remove('hidden');
+            stockEl.style.display = 'inline-flex';
         } else {
-            stockEl.className = 'product-details-stock-tag badge-in-stock';
-            stockEl.innerHTML = `<i class="fa-solid fa-check" style="margin-left:4px;"></i> ${STORE_TRANSLATIONS[currentStoreLang].in_stock || 'متوفر بالمخزون'}`;
+            stockEl.className = 'product-details-stock-tag hidden';
+            stockEl.innerHTML = '';
+            stockEl.style.display = 'none';
         }
     }
 
@@ -1524,13 +1578,16 @@ async function handleRouting() {
         }
     } 
     else if (rawHash === '#/login' || rawHash === '#login') {
-        document.title = 'MAS - الدخول';
-        if (currentUser && currentUser.role === 'student') {
-            window.location.hash = '#/dashboard';
-        } else {
-            showView('view-student-auth');
-        }
+        document.title = 'MAS - تسجيل الدخول';
+        // Only show auth page when user explicitly navigated to login URL
+        showView('view-student-auth');
+        if (btnShowLogin) btnShowLogin.click();
     } 
+    else if (rawHash === '#/register' || rawHash === '#register') {
+        document.title = 'MAS - إنشاء حساب';
+        showView('view-student-auth');
+        if (btnShowRegister) btnShowRegister.click();
+    }
     else if (rawHash === '#/dashboard' || rawHash === '#dashboard') {
         document.title = 'MAS - لوحة الطالب';
         if (currentUser && currentUser.role === 'student') {
@@ -1541,7 +1598,10 @@ async function handleRouting() {
             updateStudentSidebarUI();
             initializeWelcomeNotification();
         } else {
-            window.location.hash = '#/login';
+            // Not logged in — go to landing instead of forcing login page
+            document.title = 'MAS - أستوديو موناليزا للفنون';
+            showView('view-landing');
+            _loadLandingStore();
         }
     } 
     else if (isAdminHashMatch) {
@@ -1553,23 +1613,106 @@ async function handleRouting() {
             showView('view-admin-auth');
         }
     } 
-    else {
-        // Fallback for empty/unknown route (e.g. "/" or "#")
-        if (rawHash === '' || rawHash === '#' || rawHash === '#/') {
-            if (currentUser && currentUser.role === 'student') {
-                window.location.hash = '#/dashboard';
-            } else if (currentUser && currentUser.role === 'admin') {
-                window.location.hash = `#/${dynamicAdminHash}`;
-            } else {
-                window.location.hash = '#/login';
-            }
+    else if (
+        rawHash === '' || rawHash === '#' || rawHash === '#/' ||
+        rawHash === '#/landing' || rawHash === '#landing' ||
+        rawHash === '#/home' || rawHash === '#home' ||
+        rawHash.startsWith('#landing') || rawHash.startsWith('#/landing')
+    ) {
+        // If student is already logged in, keep them in their hub (don't push to landing)
+        if (currentUser && currentUser.role === 'student') {
+            document.title = 'MAS - لوحة الطالب';
+            showView('view-hub');
+            const activeTabBtn = document.querySelector('.sidebar-tab-btn.active') || document.querySelector('.bottom-nav-item.active');
+            const targetTab = activeTabBtn ? (activeTabBtn.getAttribute('data-tab') || activeTabBtn.getAttribute('data-target-tab')) : 'tab-home';
+            switchStudentTab(targetTab || 'tab-home');
+            updateStudentSidebarUI();
+            initializeWelcomeNotification();
         } else {
-            // Mismatched or unauthorized route -> instant cleanup and show 404
-            clearAdminDashboardSession();
-            showView('view-404');
+            // Visitor / guest → show landing page
+            document.title = 'MAS - أستوديو موناليزا للفنون';
+            showView('view-landing');
+            _loadLandingStore();
+
+            // Smooth scroll to target section if present
+            const sectionId = rawHash.replace(/^#\/?/, '');
+            if (sectionId && sectionId !== 'landing' && sectionId !== 'home') {
+                setTimeout(() => {
+                    const targetEl = document.getElementById(sectionId);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 80);
+            }
         }
     }
+    else {
+        // Mismatched or unauthorized route -> instant cleanup and show 404
+        clearAdminDashboardSession();
+        showView('view-404');
+    }
 }
+
+// Helper: load the customer store for landing page
+// Note: Firestore rules allow public reads for store collections (if true), 
+// so no authentication required.
+function _loadLandingStore() {
+    loadCustomerStore();
+    updateLandingHeaderUI();
+}
+
+// Helper: update the Landing Page header to reflect login state
+function updateLandingHeaderUI() {
+    const loginBtn    = document.getElementById('landing-btn-login');
+    const registerBtn = document.getElementById('landing-btn-register');
+    const userArea    = document.getElementById('landing-user-area');
+    const userNameEl  = document.getElementById('landing-user-name');
+
+    if (!userArea) return; // Elements not yet in DOM
+
+    if (currentUser && (currentUser.role === 'student' || currentUser.role === 'admin')) {
+        // Logged in: hide visitor buttons, show user area
+        if (loginBtn)    loginBtn.classList.add('hidden');
+        if (registerBtn) registerBtn.classList.add('hidden');
+        userArea.classList.remove('hidden');
+
+        // Show name (student) or "الأدمن" label
+        if (userNameEl) {
+            userNameEl.textContent = currentUser.role === 'admin'
+                ? 'الأدمن'
+                : (currentUser.name || 'طالب');
+        }
+    } else {
+        // Not logged in: show visitor buttons, hide user area
+        if (loginBtn)    loginBtn.classList.remove('hidden');
+        if (registerBtn) registerBtn.classList.remove('hidden');
+        userArea.classList.add('hidden');
+    }
+}
+
+
+// 404 Back to Site Button
+document.addEventListener('click', (e) => {
+    if (e.target.closest('#btn-404-back-site')) {
+        window.location.hash = '#/landing';
+    }
+    
+    // Smooth scroll for Landing Page internal section links
+    const landingAnchor = e.target.closest('a[href^="#landing-"]');
+    if (landingAnchor) {
+        const href = landingAnchor.getAttribute('href');
+        const targetId = href.replace(/^#/, '');
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            const landingView = document.getElementById('view-landing');
+            if (landingView && !landingView.classList.contains('hidden')) {
+                e.preventDefault();
+                history.replaceState(null, '', href);
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }
+});
 
 window.addEventListener('hashchange', handleRouting);
 
@@ -2175,12 +2318,13 @@ if (formRegister) {
 }
 
 // --- LOGOUT CONFIRMATION DIALOG HANDLERS ---
-document.querySelectorAll('.btn-logout-action').forEach(btn => {
-    btn.addEventListener('click', () => {
+// Using event delegation to catch dynamically added logout buttons (e.g., landing header)
+document.addEventListener('click', (e) => {
+    if (e.target.closest('.btn-logout-action')) {
         if (modalLogout) {
             modalLogout.classList.remove('hidden');
         }
-    });
+    }
 });
 
 if (btnCancelLogout) {
@@ -2206,7 +2350,7 @@ if (btnConfirmLogout) {
         clearSessionLocalData();
         detachSessionListener();
         currentUser = null;
-        window.location.hash = '#/login';
+        window.location.hash = '#/landing';
     });
 }
 
@@ -2587,7 +2731,8 @@ onAuthStateChanged(auth, async (user) => {
     if (currentUid === lastAuthUid && currentEmail === lastAuthEmail) {
         if (!isAuthResolved) {
             isAuthResolved = true;
-            handleRouting();
+            await handleRouting();
+            updateLandingHeaderUI();
         }
         return;
     }
@@ -2600,6 +2745,7 @@ onAuthStateChanged(auth, async (user) => {
         sessionStorage.setItem('monaliza_user', JSON.stringify(currentUser));
         isAuthResolved = true;
         await handleRouting();
+        updateLandingHeaderUI();
     } else if (user && user.email?.endsWith(`@${STUDENT_AUTH_DOMAIN}`)) {
         try {
             const studentRecord = await loadStudentDataByUid(user.uid);
@@ -2609,14 +2755,17 @@ onAuthStateChanged(auth, async (user) => {
                 attachSessionWatcher(user.uid);
                 isAuthResolved = true;
                 await handleRouting();
+                updateLandingHeaderUI();
             } else {
                 isAuthResolved = true;
                 await handleRouting();
+                updateLandingHeaderUI();
             }
         } catch (err) {
             console.error('Student auth restore failed:', err);
             isAuthResolved = true;
             await handleRouting();
+            updateLandingHeaderUI();
         }
     } else {
         detachSessionListener();
@@ -2625,6 +2774,7 @@ onAuthStateChanged(auth, async (user) => {
         sessionStorage.removeItem('monaliza_user');
         isAuthResolved = true;
         await handleRouting();
+        updateLandingHeaderUI();
     }
 });
 
@@ -2661,7 +2811,7 @@ adminNavBtns.forEach(btn => {
 
 if (btnAdminBackSite) {
     btnAdminBackSite.addEventListener('click', () => {
-        window.location.hash = '#/login';
+        window.location.hash = '#/landing';
     });
 }
 
@@ -4614,6 +4764,24 @@ setupStudentMobileBurgerMenu();
 initTheme();
 initStoreTab();
 handleRouting();
+
+// Force-clear all search inputs on page load to prevent browser autocomplete pollution
+(function clearAllSearchInputs() {
+    const searchIds = [
+        'store-product-search-input',
+        'landing-store-search-input',
+        'admin-student-search-input'
+    ];
+    searchIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.value = ''; el.setAttribute('autocomplete', 'off'); }
+    });
+    // Reset sort selects to default
+    ['priceSortSelect', 'landingPriceSortSelect'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = 'default';
+    });
+})();
 
 
 

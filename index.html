@@ -26,9 +26,355 @@
     <div id="app-container">
 
         <!-- ========================================== -->
+        <!-- VIEW: VISITOR LANDING PAGE                 -->
+        <!-- ========================================== -->
+        <section id="view-landing" class="view">
+            <!-- Landing Header Navbar -->
+            <header class="landing-header">
+                <div class="landing-header-inner">
+                    <div class="landing-brand">
+                        <a href="#/landing" class="landing-logo-link">
+                            <img src="assets/logo_wide_black.png" 
+                                 data-src-light="assets/logo_wide_black.png" 
+                                 data-src-dark="assets/logo_wide_white.png" 
+                                 alt="Monalisa Art Studio Logo" class="landing-logo theme-logo">
+                        </a>
+                    </div>
+                    
+                    <nav class="landing-nav-links">
+                        <a href="#landing-hero" class="landing-nav-link">الرئيسية</a>
+                        <a href="#landing-about" class="landing-nav-link">عن المنصة</a>
+                        <a href="#landing-store" class="landing-nav-link">المتجر الفني</a>
+                        <a href="#landing-courses" class="landing-nav-link">الكورسات</a>
+                    </nav>
+
+                    <div class="landing-header-actions">
+                        <!-- Theme Switcher -->
+                        <button id="btn-landing-theme-toggle" class="icon-btn ripple-btn landing-theme-btn" aria-label="تغيير المظهر">
+                            <i class="fa-solid fa-moon"></i>
+                        </button>
+                        <!-- Visitor Buttons (shown when NOT logged in) -->
+                        <a href="#/login" id="landing-btn-login" class="btn-landing-auth-link btn-login-link">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>تسجيل الدخول</span>
+                        </a>
+                        <a href="#/register" id="landing-btn-register" class="btn-landing-auth-link btn-register-link">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>إنشاء حساب</span>
+                        </a>
+                        <!-- Logged-in User Area (shown when logged in) -->
+                        <div id="landing-user-area" class="landing-user-area hidden">
+                            <div class="landing-user-chip">
+                                <i class="fa-solid fa-circle-user"></i>
+                                <span id="landing-user-name">طالب</span>
+                            </div>
+                            <a href="#/dashboard" class="btn-landing-auth-link btn-dashboard-link">
+                                <i class="fa-solid fa-table-columns"></i>
+                                <span>لوحتي</span>
+                            </a>
+                            <button type="button" id="landing-btn-logout" class="btn-landing-auth-link btn-landing-logout btn-logout-action">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span>خروج</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- SECTION 1: HERO SECTION -->
+            <section id="landing-hero" class="landing-hero-section">
+                <div class="landing-hero-backdrop">
+                    <div class="hero-glow-sphere hero-glow-1"></div>
+                    <div class="hero-glow-sphere hero-glow-2"></div>
+                    <div class="hero-glow-sphere hero-glow-3"></div>
+                    <div class="hero-art-shapes">
+                        <span class="art-shape shape-1"><i class="fa-solid fa-palette"></i></span>
+                        <span class="art-shape shape-2"><i class="fa-solid fa-paintbrush"></i></span>
+                        <span class="art-shape shape-3"><i class="fa-solid fa-compass-drafting"></i></span>
+                        <span class="art-shape shape-4"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                    </div>
+                </div>
+                
+                <div class="landing-hero-content">
+                    <div class="landing-hero-badge">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>مرحباً بك في موناليزا آرت ستوديو</span>
+                    </div>
+                    
+                    <h1 class="landing-hero-title">أستوديو موناليزا للفنون</h1>
+                    
+                    <p class="landing-hero-subtitle">طوّر موهبتك في الرسم وتعلّم أسس الفن باحتراف 🎨</p>
+                    
+                    <p class="landing-hero-desc">
+                     احدث الكورسات في مجال الفنون بخبرة أكثر من 25 سنة ومتجر فني يحتوي على قطع فنية وهاند ميد
+                    </p>
+                    
+                    <div class="landing-hero-cta-group">
+                        <a href="#landing-courses" class="btn-landing-hero-primary">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>استكشف الكورسات المتاحة</span>
+                        </a>
+                        <a href="#landing-store" class="btn-landing-hero-secondary">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span>تصفح متجر المنتجات</span>
+                        </a>
+                        <a href="#/register" class="btn-landing-hero-accent">
+                            <i class="fa-solid fa-sparkles"></i>
+                            <span>انضم إلينا الآن</span>
+                        </a>
+                    </div>
+
+                    <div class="landing-hero-stats">
+                        <div class="hero-stat-pill">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <div>
+                                <strong>+5000</strong>
+                                <span>طالب متدرب</span>
+                            </div>
+                        </div>
+                        <div class="hero-stat-pill">
+                            <i class="fa-solid fa-award"></i>
+                            <div>
+                                <strong>23+ سنة</strong>
+                                <span>خبرة أكاديمية</span>
+                            </div>
+                        </div>
+                        <div class="hero-stat-pill">
+                            <i class="fa-solid fa-certificate"></i>
+                            <div>
+                                <strong>100%</strong>
+                                <span>نسبة نجاح واحتراف</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: ABOUT SECTION -->
+            <section id="landing-about" class="landing-about-section">
+                <div class="landing-container">
+                    <div class="landing-section-header">
+                        <span class="landing-section-kicker"><i class="fa-solid fa-circle-info"></i> نبذة عن المنصة</span>
+                        <h2 class="landing-section-title">رسالتنا ورؤيتنا الفنية</h2>
+                    </div>
+                    
+                    <div class="landing-about-grid">
+                        <!-- Right Side: Text with scroll reveal -->
+                        <div class="landing-about-text-card">
+                            <div class="about-card-badge">
+                                <i class="fa-solid fa-feather-pointed"></i>
+                                <span>عالم من الإبداع والجمال</span>
+                            </div>
+                            <p class="landing-about-quote">
+                                "في موناليزا آرت ستوديو هدفنا تدريس الفنون وتطوير متدربينا حتى الاحتراف والإتقان. دوراتنا تقدم لك نافذة مطلة على عالم الإبداع الغني بالتفاصيل والجمال. نساعدك في تطوير مشاريعك وتأمين مستقبلك الفني سواء من خلال دورة قدرات الفنون أو دورة قدرات العمارة أو دورات تصميم المنتجات اليدوية وحتى صناعة اللوحات الفنية."
+                            </p>
+                            <div class="about-highlights-list">
+                                <div class="about-highlight-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>تأهيل شامل لامتحانات قدرات كليات الفنون والعمارة.</span>
+                                </div>
+                                <div class="about-highlight-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>شرح عملي وتطبيقي خطوة بخطوة من الأساسيات للاحتراف.</span>
+                                </div>
+                                <div class="about-highlight-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>متجر متكامل لقطع الهاند ميد واللوحات الفنية الحصرية.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Left Side: Long Logo that auto-swaps on dark/light mode -->
+                        <div class="landing-about-media-card">
+                            <div class="about-logo-frame">
+                                <img src="assets/logo_long_black.png" 
+                                     data-src-light="assets/logo_long_black.png" 
+                                     data-src-dark="assets/logo_long_white.png" 
+                                     alt="Monalisa Studio Long Logo" class="landing-about-logo theme-logo">
+                                <div class="logo-frame-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: STORE SHOWCASE -->
+            <section id="landing-store" class="landing-store-section">
+                <div class="landing-container">
+                    <div class="landing-section-header">
+                        <span class="landing-section-kicker"><i class="fa-solid fa-bag-shopping"></i> إبداعات حصرية</span>
+                        <h2 class="landing-section-title">متجر موناليزا للأعمال الفنية والهاند ميد</h2>
+                        <p class="landing-section-desc">منتجات فنية هاند ميد، لوح مصممة، أطباق فنية، ومطبوعات مخصصة بكل حب وإتقان.</p>
+                    </div>
+
+                    <!-- Store Controls Toolbar -->
+                    <div class="store-controls-toolbar">
+                        <!-- Line 1: Search & Price Sort -->
+                        <div class="store-search-sort-row">
+                            <div class="store-search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="landing-store-search-input" placeholder="ابحث عن لوحة، طبق، مطبوعة..." autocomplete="off" autocorrect="off" spellcheck="false" value="">
+                            </div>
+                            <div class="store-sort-wrap">
+                                <i class="fa-solid fa-arrow-down-short-wide"></i>
+                                <select id="landingPriceSortSelect" class="store-sort-select" aria-label="ترتيب المنتجات">
+                                    <option value="default">الافتراضي (أحدث المنتجات)</option>
+                                    <option value="price-asc">السعر: من الأقل للأعلى</option>
+                                    <option value="price-desc">السعر: من الأعلى للأقل</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Line 2: Categories Chips Bar -->
+                        <div id="landing-store-categories-bar" class="store-categories-bar">
+                            <button type="button" class="store-category-chip active" data-cat-id="all">
+                                <i class="fa-solid fa-shapes"></i>
+                                <span>جميع المنتجات</span>
+                                <span class="store-chip-count" id="landing-chip-count-all">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid Container -->
+                    <div id="landing-store-products-grid" class="store-products-grid">
+                        <!-- Injected dynamically via app.js -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: COURSES SHOWCASE -->
+            <section id="landing-courses" class="landing-courses-section">
+                <div class="landing-container">
+                    <div class="landing-section-header">
+                        <span class="landing-section-kicker"><i class="fa-solid fa-graduation-cap"></i> البرامج التدريبية</span>
+                        <h2 class="landing-section-title">الكورسات والدورات المتاحة</h2>
+                        <p class="landing-section-desc">مناهج تدريبية مكثفة تؤهلك للتفوق في اختبارات القدرات واحتراف الفنون التشكيلية والعمارة.</p>
+                    </div>
+
+                    <div class="landing-courses-grid">
+                        <!-- Course 1: قدرات الفنون -->
+                        <div class="landing-course-card">
+                            <div class="landing-course-thumb">
+                                <img src="assets/course_logo.jpeg" alt="كورس قدرات الفنون" class="landing-course-img">
+                                <span class="landing-course-badge"><i class="fa-solid fa-palette"></i> كورس قدرات الفنون</span>
+                            </div>
+                            <div class="landing-course-body">
+                                <h3>دورة تأهيل اختبارات قدرات كليات الفنون (الجميلة والتطبيقية والتربية الفنية)</h3>
+                                <p>تعلم المنظور الحر، النسب التشريحية للوجه والجسم، التظليل المتقن، وأسس التصميم والتكوين الفني لاجتياز الاختبار بدرجة امتياز.</p>
+                                <div class="landing-course-features">
+                                    <span><i class="fa-solid fa-circle-check"></i> محاضرات مرئية تفصيلية عالية الدقة</span>
+                                    <span><i class="fa-solid fa-circle-check"></i> تطبيقات وتدريبات عملية أسبوعية</span>
+                                    <span><i class="fa-solid fa-circle-check"></i> إشراف أكاديمي مباشر من د/ أحمد مصطفى</span>
+                                </div>
+                                <div class="landing-course-footer">
+                                    <a href="#/login" class="btn-course-enroll">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                        <span>سجل الآن واشترك</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course 2: قدرات العمارة -->
+                        <div class="landing-course-card">
+                            <div class="landing-course-thumb">
+                                <img src="assets/course_logo.jpeg" alt="كورس قدرات العمارة" class="landing-course-img">
+                                <span class="landing-course-badge architecture"><i class="fa-solid fa-compass-drafting"></i> كورس قدرات العمارة</span>
+                            </div>
+                            <div class="landing-course-body">
+                                <h3>دورة تأهيل اختبارات قدرات كليات الفنون الجميلة (قسم عمارة)</h3>
+                                <p>إتقان المنظور الهندسي من نقطة ونقطتي هروب، رسم الكتل والمجسمات الهندسية، الظلال المعمارية، ومهارات التفكير الإبداعي والفراغي.</p>
+                                <div class="landing-course-features">
+                                    <span><i class="fa-solid fa-circle-check"></i> أساسيات المنظور الهندسي والمعماري</span>
+                                    <span><i class="fa-solid fa-circle-check"></i> رسم الإسقاط والكتل ثلاثية الأبعاد</span>
+                                    <span><i class="fa-solid fa-circle-check"></i> نماذج اختبارات قدرات سابقة محلولة</span>
+                                </div>
+                                <div class="landing-course-footer">
+                                    <a href="#/login" class="btn-course-enroll">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                        <span>سجل الآن واشترك</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: CTA SECTION -->
+            <section id="landing-cta" class="landing-cta-section">
+                <div class="landing-container">
+                    <div class="landing-cta-box">
+                        <div class="cta-glow-effect"></div>
+                        <div class="cta-content">
+                            <span class="cta-mini-tag"><i class="fa-solid fa-sparkles"></i> ابدأ رحلتك الفنية اليوم</span>
+                            <h2 class="cta-heading">ماذا تنتظر الآن؟ هيا سجل دخول وانضم لتعلم أسس الفن باحتراف!</h2>
+                            <p class="cta-subheading">انضم لمئات المتدربين الذين طوروا شغفهم واجتازوا اختباراتهم وتألقوا في عالم الفنون.</p>
+                            <div class="cta-buttons-group">
+                                <a href="#/register" class="btn-cta-register">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                    <span>إنشاء حساب</span>
+                                </a>
+                                <a href="#/login" class="btn-cta-login">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                    <span>تسجيل الدخول</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: LANDING FOOTER WITH DEVELOPER CREDITS -->
+            <footer class="landing-footer">
+                <div class="landing-container">
+                    <div class="landing-footer-grid">
+                        <div class="footer-brand-side">
+                            <img src="assets/logo_wide_black.png" 
+                                 data-src-light="assets/logo_wide_black.png" 
+                                 data-src-dark="assets/logo_wide_white.png" 
+                                 alt="Monalisa Logo" class="landing-footer-logo theme-logo">
+                            <p>استوديو موناليزا للفنون — صرح تعليمي رائد ومتجر متكامل لإبداعات الهاند ميد برؤية أكاديمية واحترافية.</p>
+                        </div>
+                        <div class="footer-links-side">
+                            <h4>روابط سريعة</h4>
+                            <ul>
+                                <li><a href="#landing-hero">الرئيسية</a></li>
+                                <li><a href="#landing-about">عن المنصة</a></li>
+                                <li><a href="#landing-store">المتجر الفني</a></li>
+                                <li><a href="#landing-courses">الكورسات</a></li>
+                                <li><a href="#/terms">شروط الاستخدام</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-social-side">
+                            <h4>تواصل معنا</h4>
+                            <div class="footer-social-links">
+                                <a href="https://wa.me/201098310340" target="_blank" rel="noopener" class="social-icon-btn whatsapp" aria-label="WhatsApp">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                                <a href="https://www.facebook.com/share/18rmiWi5MB/" target="_blank" rel="noopener" class="social-icon-btn facebook" aria-label="Facebook">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="landing-footer-bottom">
+                        <p>جميع الحقوق محفوظة &copy; 2026 استوديو موناليزا للفنون</p>
+                        <div class="landing-dev-credit">
+                            <a href="https://wa.me/201122645603" target="_blank" rel="noopener noreferrer" class="dev-link-pulse">
+                                <i class="fa-solid fa-code"></i>
+                                <span>تم تطويره بواسطة @Dev_-Yassin</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+
+        <!-- ========================================== -->
         <!-- VIEW: STUDENT AUTHENTICATION               -->
         <!-- ========================================== -->
-        <section id="view-student-auth" class="view">
+        <section id="view-student-auth" class="view hidden">
             <div class="auth-wrapper">
                 <div class="auth-card">
                     <div class="auth-logo-container">
@@ -399,7 +745,7 @@
                                 <div class="store-search-sort-row">
                                     <div class="store-search-wrap">
                                         <i class="fa-solid fa-magnifying-glass"></i>
-                                        <input type="text" id="store-product-search-input" placeholder="ابحث عن لوحة، طبق، مطبوعة..." data-i18n-placeholder="search_placeholder">
+                                        <input type="text" id="store-product-search-input" placeholder="ابحث عن لوحة، طبق، مطبوعة..." data-i18n-placeholder="search_placeholder" autocomplete="off" autocorrect="off" spellcheck="false" value="">
                                     </div>
                                     <div class="store-sort-wrap">
                                         <i class="fa-solid fa-arrow-down-short-wide"></i>
@@ -863,7 +1209,7 @@
                         <div class="provisioning-search-wrapper" style="margin-bottom: 24px;">
                             <div class="search-container" style="position: relative; width: 100%;">
                                 <i class="fa-solid fa-magnifying-glass search-icon" style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: var(--text-sub); pointer-events: none;"></i>
-                                <input type="text" id="admin-student-search-input" readonly placeholder="ابحث عن طالب بالاسم أو رقم الهاتف..." class="search-input" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" data-lpignore="true" data-form-type="other" aria-autocomplete="none" style="width: 100%; padding: 16px 50px 16px 20px; border-radius: 12px; background-color: var(--card-bg); border: 1.5px solid var(--card-border); color: var(--text-main); outline: none;">
+                                <input type="text" id="admin-student-search-input" readonly placeholder="ابحث عن طالب بالاسم أو رقم الهاتف..." class="search-input" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" data-lpignore="true" data-form-type="other" aria-autocomplete="none" value="" style="width: 100%; padding: 16px 50px 16px 20px; border-radius: 12px; background-color: var(--card-bg); border: 1.5px solid var(--card-border); color: var(--text-main); outline: none;">
                             </div>
                         </div>
 

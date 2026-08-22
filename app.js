@@ -995,6 +995,7 @@ function renderCustomerProductsGrid() {
                 <div class="${cardClass}" data-product-id="${prod.id}">
                     <div class="product-card-thumb-wrap">
                         <img src="${imgUrl}" alt="${title}" class="product-card-thumb" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='assets/course_logo.jpeg'">
+                        <div class="product-watermark-overlay"></div>
                         ${isOutOfStock 
                             ? `<div class="product-card-out-exclusive-badge"><i class="fa-solid fa-ban"></i> ${outOfStockText}</div>`
                             : ''
@@ -4000,12 +4001,47 @@ function setupStudentMobileBurgerMenu() {
 // 10. STORE ADMINISTRATIVE CONTROLLER (لوحة إدارة المتجر)
 // ==========================================
 
+const STORE_WATERMARK_STORAGE_KEY = 'monaliza_store_watermark_enabled';
+
+// Initialize Watermark state from localStorage (Defaults to active if not set)
+function initStoreWatermarkState() {
+    const saved = localStorage.getItem(STORE_WATERMARK_STORAGE_KEY);
+    const isEnabled = saved === null ? true : saved === 'true';
+    document.body.classList.toggle('enable-store-watermark', isEnabled);
+    
+    const toggleEl = document.getElementById('toggle-store-watermark');
+    if (toggleEl) {
+        toggleEl.checked = isEnabled;
+    }
+}
+
+// Setup Admin Watermark Switch Event Listener
+function setupStoreWatermarkListener() {
+    const toggleEl = document.getElementById('toggle-store-watermark');
+    if (!toggleEl || toggleEl.dataset.listenerAttached) return;
+    
+    toggleEl.dataset.listenerAttached = 'true';
+    const saved = localStorage.getItem(STORE_WATERMARK_STORAGE_KEY);
+    toggleEl.checked = saved === null ? true : saved === 'true';
+
+    toggleEl.addEventListener('change', () => {
+        const isChecked = toggleEl.checked;
+        localStorage.setItem(STORE_WATERMARK_STORAGE_KEY, isChecked ? 'true' : 'false');
+        document.body.classList.toggle('enable-store-watermark', isChecked);
+        showToast(
+            isChecked ? 'تم تفعيل العلامة المائية على صور المنتجات بنجاح!' : 'تم تعطيل العلامة المائية على صور المنتجات.',
+            isChecked ? 'success' : 'info'
+        );
+    });
+}
+
 let adminStoreCategoriesCache = [];
 let adminStoreProductsCache = [];
 let pendingStoreDeleteAction = null; // { type: 'category' | 'product', id: string, name: string }
 
 // Initialize and load store admin data
 async function loadStoreAdmin() {
+    setupStoreWatermarkListener();
     setupStoreAdminSubTabs();
     setupStoreAdminModals();
     setupStoreImageDropzones();
@@ -4762,6 +4798,7 @@ async function executePendingStoreDelete() {
 injectCustomHashInputToHtml();
 setupStudentMobileBurgerMenu();
 initTheme();
+initStoreWatermarkState();
 initStoreTab();
 handleRouting();
 

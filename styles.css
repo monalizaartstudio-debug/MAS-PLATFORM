@@ -7363,6 +7363,201 @@ body.dark-theme .landing-header {
     animation: devPulseGlow 3.5s ease-in-out infinite;
     transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
+    line-height: 1.35;
+    margin: 0 0 16px;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cta-subheading {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.75;
+    margin: 0 auto 36px;
+    max-width: 640px;
+}
+
+.cta-buttons-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.btn-cta-register {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #00d2ff, #0070f3);
+    color: #ffffff;
+    padding: 16px 36px;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 8px 30px rgba(0, 210, 255, 0.45);
+    transition: var(--transition-smooth);
+}
+
+.btn-cta-register:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 14px 40px rgba(0, 210, 255, 0.65);
+    color: #ffffff;
+}
+
+.btn-cta-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 15px 32px;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    transition: var(--transition-smooth);
+}
+
+.btn-cta-login:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #ffffff;
+    transform: translateY(-3px);
+    color: #ffffff;
+}
+
+/* SECTION 6: LANDING FOOTER & DEVELOPER CREDITS */
+.landing-footer {
+    background: var(--card-bg);
+    border-top: 1.5px solid var(--card-border);
+    padding: 64px 0 32px;
+}
+
+.landing-footer-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+}
+
+.footer-brand-side p {
+    font-size: 0.95rem;
+    color: var(--text-sub);
+    line-height: 1.8;
+    margin-top: 16px;
+    max-width: 420px;
+}
+
+.landing-footer-logo {
+    max-height: 52px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-links-side h4,
+.footer-social-side h4 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0 0 18px;
+}
+
+.footer-links-side ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-links-side a {
+    color: var(--text-sub);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.footer-links-side a:hover {
+    color: var(--accent-cyan);
+    transform: translateX(-4px);
+}
+
+.footer-social-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.social-icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    border: 1.5px solid var(--card-border);
+    color: var(--text-main);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+.social-icon-btn.whatsapp:hover {
+    background: #25d366;
+    color: #ffffff;
+    border-color: #25d366;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+}
+
+.social-icon-btn.facebook:hover {
+    background: #1877f2;
+    color: #ffffff;
+    border-color: #1877f2;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(24, 119, 242, 0.35);
+}
+
+.landing-footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 28px;
+    border-top: 1px solid var(--card-border);
+    font-size: 0.9rem;
+    color: var(--text-sub);
+}
+
+.landing-dev-credit {
+    display: flex;
+    align-items: center;
+}
+
+.dev-link-pulse {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 16px;
+    background: rgba(14, 165, 233, 0.08);
+    border: 1.5px solid rgba(14, 165, 233, 0.3);
+    color: #0284c7;
+    font-family: var(--font-cairo);
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    box-shadow: 0 0 16px rgba(14, 165, 233, 0.15);
+    animation: devPulseGlow 3.5s ease-in-out infinite;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
 
 body.dark-theme .dev-link-pulse {
     color: #38bdf8;
@@ -7460,5 +7655,138 @@ body.dark-theme .dev-link-pulse:hover {
         flex-direction: column;
         text-align: center;
         gap: 16px;
+    }
+}
+
+/* ==========================================================================
+   PRODUCT IMAGE WATERMARK PROTECTION OVERLAY
+   ========================================================================== */
+.product-card-thumb-wrap,
+.product-details-img-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-watermark-overlay {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 3;
+    display: none;
+    opacity: 0.15;
+    background-repeat: repeat;
+    background-size: 140px auto;
+    background-position: center;
+    transform: rotate(-25deg);
+    transition: opacity 0.3s ease;
+}
+
+/* Display overlay when watermark is enabled on body */
+body.enable-store-watermark .product-watermark-overlay {
+    display: block;
+}
+
+/* Light Mode: Use Dark/Black Transparent Logo */
+body.light-theme .product-watermark-overlay,
+body:not(.dark-theme) .product-watermark-overlay {
+    background-image: url('assets/logo_wide_black.png');
+}
+
+/* Dark Mode: Use White/Light Transparent Logo */
+body.dark-theme .product-watermark-overlay {
+    background-image: url('assets/logo_wide_white.png');
+}
+
+/* Store Admin Settings Card & Switch Styling */
+.store-admin-settings-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 18px;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-smooth);
+}
+
+.store-admin-settings-card:hover {
+    border-color: var(--accent-purple, #8A2BE2);
+    box-shadow: 0 4px 20px rgba(138, 43, 226, 0.12);
+}
+
+.store-admin-setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.store-setting-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: rgba(138, 43, 226, 0.1);
+    color: var(--accent-purple, #8A2BE2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(138, 43, 226, 0.2);
+}
+
+.store-setting-text {
+    flex-grow: 1;
+}
+
+.store-setting-text h4 {
+    margin: 0 0 4px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.store-setting-text p {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--text-sub);
+    line-height: 1.5;
+}
+
+.store-setting-control {
+    flex-shrink: 0;
+}
+
+/* Purple Toggle Switch Specific Styling */
+.switch-ios.switch-purple input:not(:checked) + .slider-ios {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+body.light-theme .switch-ios.switch-purple input:not(:checked) + .slider-ios {
+    background-color: #cbd5e1;
+    border-color: #94a3b8;
+}
+
+.switch-ios.switch-purple input:checked + .slider-ios {
+    background-color: var(--accent-purple, #8A2BE2) !important;
+    border-color: var(--accent-purple, #8A2BE2) !important;
+    box-shadow: 0 0 14px rgba(138, 43, 226, 0.6) !important;
+}
+
+.switch-ios.switch-purple input:focus + .slider-ios {
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.6) !important;
+}
+
+@media (max-width: 640px) {
+    .store-admin-setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .store-setting-control {
+        align-self: flex-end;
     }
 }

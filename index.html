@@ -1360,6 +1360,25 @@
                             <p>التحكم الشامل في أقسام ومنتجات المتجر، إدارة الأسعار، صور المنتجات، ورسائل الواتساب التلقائية.</p>
                         </div>
 
+                        <!-- Store Quick Settings & Protection Bar -->
+                        <div class="store-admin-settings-card">
+                            <div class="store-admin-setting-item">
+                                <div class="store-setting-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <div class="store-setting-text">
+                                    <h4>وضع علامة مائية على صور المنتجات</h4>
+                                    <p>حماية حقوق الملكية الفنية تلقائياً بطبقة علامة مائية شبكية شفافة مكررة على صور المنتجات ونافذة التفاصيل.</p>
+                                </div>
+                                <div class="store-setting-control">
+                                    <label class="switch-ios switch-purple" for="toggle-store-watermark" title="تفعيل / تعطيل العلامة المائية">
+                                        <input type="checkbox" id="toggle-store-watermark">
+                                        <span class="slider-ios"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Store Admin Sub Tabs -->
                         <div class="store-admin-tabs-nav">
                             <button type="button" id="btn-store-tab-products" class="store-admin-tab-btn active">
@@ -1843,6 +1862,7 @@
                 <div class="product-details-visual">
                     <div class="product-details-img-container">
                         <img id="detail-product-img" src="assets/course_logo.jpeg" alt="Product Image" class="product-details-main-img">
+                        <div class="product-watermark-overlay"></div>
                         <div id="detail-product-badge" class="product-details-badge hidden" style="display: none;"></div>
                         <div id="detail-product-stock-tag" class="product-details-stock-tag hidden" style="display: none;"></div>
                     </div>
